@@ -6,19 +6,23 @@
   <meta name="theme-color" content="#070708">
   <meta name="description" content="Jack — a digital portfolio of p5.js experiments, TouchDesigner studies and creative computing.">
   <title>Jack — Digital Portfolio</title>
-  <link rel="icon" href="./favicon.svg?v=raven-3" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=raven-3">
-  <script src="./projects.js?v=raven-3" defer></script>
-  <script src="./app.js?v=raven-3" defer></script>
-  <script src="./portfolio-media.js?v=raven-3" defer></script>
-  <script src="./raven-overlay.js?v=raven-3" defer></script>
-  <script src="./motion.js?v=raven-3" defer></script>
+  <link rel="icon" href="./favicon.svg?v=seamless-line-1" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css?v=final-feathers-1">
+  <script src="./projects.js?v=seamless-line-1" defer></script>
+  <script src="./app.js?v=seamless-line-1" defer></script>
+  <script src="./portfolio-media.js?v=seamless-line-1" defer></script>
+  <script src="./raven-overlay.js?v=seamless-line-1" defer></script>
+  <script src="./motion.js?v=seamless-line-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
+  <div class="hero-media" aria-hidden="true">
+    <img id="hero-poster" src="./hero-video-final.webp?v=seamless-line-1" width="1920" height="1080" alt="" fetchpriority="high">
+    <video id="intro-character-video" muted playsinline preload="metadata" aria-hidden="true" hidden></video>
+  </div>
   <div id="intro-overlay" class="intro-overlay" aria-label="Portfolio opening animation" aria-hidden="true" hidden>
     <canvas id="intro-canvas" aria-hidden="true"></canvas>
-    <div class="intro-topline"><span>JACK</span><button id="skip-intro" type="button">Skip intro <span aria-hidden="true">↗</span></button></div>
+    <div class="intro-topline"><span>JACK</span><div class="intro-actions"><button id="pause-intro" type="button" aria-pressed="false">Pause</button><button id="skip-intro" type="button">Skip intro <span aria-hidden="true">↗</span></button></div></div>
     <div class="intro-bottomline"><span>DIGITAL PORTFOLIO</span><span>CODE / FORM / MOTION</span></div>
   </div>
   <header class="site-header">
@@ -29,16 +33,12 @@
 
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-media" aria-hidden="true">
-        <img id="hero-poster" src="./hero-raven.webp?v=raven-3" width="1920" height="1080" alt="" fetchpriority="high">
-        <video id="hero-background-video" muted playsinline loop preload="none" hidden></video>
-      </div>
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-grid" aria-hidden="true"></div>
       <div class="hero-identity" id="hero-motion-region">
         <div class="identity-frame" aria-hidden="true"><span>+</span><span>+</span><span>+</span><span>+</span></div>
         <canvas id="hero-motion" aria-hidden="true"></canvas>
-        <div id="hero-wordmark" class="hero-wordmark"><span class="wordmark-text">Jack</span><img id="hero-wordmark-image" src="./jack-wordmark.webp?v=raven-3" width="2172" height="724" alt="" aria-hidden="true" hidden></div>
+        <div id="hero-wordmark" class="hero-wordmark"><span class="wordmark-text">Jack</span><img id="hero-wordmark-image" src="./jack-wordmark.webp?v=seamless-line-1" width="2172" height="724" alt="" aria-hidden="true" hidden></div>
         <div class="identity-caption" aria-hidden="true"><span class="status-dot"></span> CODE / FORM / MOTION <span>01 / ∞</span></div>
       </div>
       <div class="hero-copy">
@@ -53,7 +53,8 @@
     </section>
 
     <section class="work section-shell" id="work" aria-labelledby="work-title">
-      <div class="section-heading"><div><p class="section-kicker">01 / THE ARCHIVE</p><h2 id="work-title">Selected work<span class="accent">.</span></h2></div><p class="section-description">Small experiments. New possibilities.<br>A collection of work from creative coding class.</p></div>
+      <svg class="feather-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="feather-red" x1=".1" y1="1" x2=".85" y2="0"><stop stop-color="#39101c"/><stop offset=".52" stop-color="#9e2538"/><stop offset="1" stop-color="#e64654"/></linearGradient><symbol id="raven-feather" viewBox="0 0 80 180"><path d="M22 148C10 129 12 109 17 91L25 103 20 77C28 53 41 28 56 8C67 37 70 66 65 86L56 94 64 91C62 109 54 126 45 135L43 121 37 144 28 154Z" fill="url(#feather-red)" fill-opacity=".55"/><g fill="none" stroke-linecap="round"><path d="M18 173C26 146 38 92 56 8" stroke="#ed4b59" stroke-width="1.25"/><path d="M26 143 16 119M29 132 16 106M32 120 19 92M35 108 22 79M38 95 28 63M41 82 33 51M44 69 39 39M47 56 45 29M50 42 50 20M28 144 42 132M31 133 50 119M34 121 56 106M37 108 60 91M40 95 64 77M43 82 66 64M46 69 65 51M49 56 63 38M52 41 60 25" stroke="#e34153" stroke-width=".65" opacity=".76"/><path d="M20 168 27 145" stroke="#ff8c93" stroke-width=".65"/></g></symbol></defs></svg>
+      <div class="section-heading"><div class="archive-title"><p class="section-kicker">01 / THE ARCHIVE</p><h2 id="work-title">Selected work<span class="accent">.</span></h2><svg class="section-feather feather--archive" aria-hidden="true" focusable="false"><use href="#raven-feather"/></svg></div><p class="section-description">Small experiments. New possibilities.<br>A collection of work from creative coding class.</p></div>
       <div class="archive-toolbar"><div class="filters" role="group" aria-label="Filter projects by medium"><button class="filter active" data-filter="p5js" aria-pressed="true">p5js <span>09</span></button><button class="filter" data-filter="touchdesigner" aria-pressed="false">TouchDesigner <span>00</span></button></div><span class="view-label" aria-hidden="true"><span>▦</span> GRID VIEW</span></div>
       <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
       <div class="project-grid" id="project-grid"></div>
@@ -62,9 +63,9 @@
       <div class="archive-end"><span><span class="status-dot"></span> <span id="archive-count">09</span> EXPERIMENTS & COUNTING</span><a href="https://editor.p5js.org/jkan349/collections/qvees2nPr" target="_blank" rel="noopener noreferrer">View the original collection <span aria-hidden="true">↗</span></a></div>
     </section>
 
-    <section class="digital section-shell" id="digital" aria-labelledby="digital-title"><div class="digital-signal" aria-hidden="true"><span>+</span><div class="signal-orbit"></div><b>TD</b><span>+</span></div><div class="digital-copy"><p class="section-kicker">02 / THE NEXT MEDIUM</p><h2 id="digital-title">TouchDesigner<span class="accent">.</span><br>A new signal.</h2><p>A space for future TouchDesigner experiments<br class="desktop-break"> in real-time visuals and digital motion.</p><span class="outlined-label"><span class="status-dot"></span> WORK TO BE ADDED</span></div><span class="digital-index" aria-hidden="true">NEXT / 02</span></section>
+    <section class="digital section-shell" id="digital" aria-labelledby="digital-title"><div class="digital-signal" aria-hidden="true"><span>+</span><div class="signal-orbit"></div><b>TD</b><span>+</span></div><div class="digital-copy"><p class="section-kicker">02 / THE NEXT MEDIUM</p><h2 id="digital-title">TouchDesigner<span class="accent">.</span><br>A new signal.</h2><p>A space for future TouchDesigner experiments<br class="desktop-break"> in real-time visuals and digital motion.</p><span class="outlined-label"><span class="status-dot"></span> WORK TO BE ADDED</span></div><svg class="section-feather feather--digital" aria-hidden="true" focusable="false"><use href="#raven-feather"/></svg><span class="digital-index" aria-hidden="true">NEXT / 02</span></section>
 
-    <section class="about section-shell" id="about" aria-labelledby="about-title"><div><p class="section-kicker">03 / THE PERSON BEHIND THE PIXELS</p><h2 id="about-title">Hi, I'm Jack<span class="accent">.</span><br>Making things move.</h2></div><div class="about-copy"><p>I’m exploring what happens when code becomes a creative medium. This portfolio brings together my class assignments, playful tests, and experiments in p5.js.</p><p>From portraits made with simple shapes to moving particles and three-dimensional studies, each sketch is another way to learn by making.</p><div class="about-links"><a href="https://github.com/CyanXart" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://editor.p5js.org/jkan349" target="_blank" rel="noopener noreferrer">p5.js <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="about section-shell" id="about" aria-labelledby="about-title"><div><p class="section-kicker">03 / THE PERSON BEHIND THE PIXELS</p><h2 id="about-title">Hi, I'm Jack<span class="accent">.</span><br>Making things move.</h2><div class="about-feather-detail" aria-hidden="true"><span></span><svg class="section-feather feather--about" focusable="false"><use href="#raven-feather"/></svg></div></div><div class="about-copy"><p>I’m exploring what happens when code becomes a creative medium. This portfolio brings together my class assignments, playful tests, and experiments in p5.js.</p><p>From portraits made with simple shapes to moving particles and three-dimensional studies, each sketch is another way to learn by making.</p><div class="about-links"><a href="https://github.com/CyanXart" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://editor.p5js.org/jkan349" target="_blank" rel="noopener noreferrer">p5.js <span aria-hidden="true">↗</span></a></div></div></section>
   </main>
 
   <footer class="site-footer"><a class="brand name-brand" href="#top" aria-label="Jack home"><span>Jack</span></a><p>JACK KAN <span>/</span> CODE. PLAY. REPEAT.</p><a href="#top">BACK TO TOP <span aria-hidden="true">↑</span></a></footer>

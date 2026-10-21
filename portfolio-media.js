@@ -1,19 +1,19 @@
-/* Optional video integration. Leave null until the actual Seedance export is added. */
-window.JackPortfolioMedia = {
-  videoPath: null // Example after adding the file: './assets/intro-raven.mp4'
-};
+/* One persistent video surface plays once and holds under the revealed UI.
+ * The poster is used only before decode, on failure or for reduced motion.
+ */
+window.JackPortfolioMedia = Object.freeze({
+  videoPath: './assets/intro-raven.mp4',
+  overlayStart: 3.7,
+  overlayDuration: 2,
+  loadTimeout: 8,
+  wordmarkPath: './jack-wordmark.webp?v=seamless-line-1'
+});
 
 (() => {
   'use strict';
-  const video = document.getElementById('hero-background-video');
   const poster = document.getElementById('hero-poster');
   const wordmark = document.getElementById('hero-wordmark');
   const wordmarkImage = document.getElementById('hero-wordmark-image');
-  const toggle = document.getElementById('toggle-motion');
-  const hero = document.querySelector('.hero');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  // Retain real HTML Jack text and a black material stage if artwork is unavailable.
   if (poster) {
     poster.addEventListener('error', () => { poster.hidden = true; });
     if (poster.complete && !poster.naturalWidth) poster.hidden = true;
@@ -30,47 +30,93 @@ window.JackPortfolioMedia = {
     if (wordmarkImage.complete) showWordmark();
   }
 
-  const configuredPath = window.JackPortfolioMedia.videoPath;
-  if (!video || typeof configuredPath !== 'string' || !configuredPath.trim()) return;
-  let url;
-  try { url = new URL(configuredPath, document.baseURI); } catch (_) { return; }
-  if (url.origin !== window.location.origin || !/\.(mp4|webm)$/i.test(url.pathname)) return;
-  let inView = true;
-  let introFinished = document.body.classList.contains('intro-complete');
-  let initialized = false;
-  let failed = false;
-
-  function syncPlayback() {
-    const paused = toggle?.getAttribute('aria-pressed') === 'true';
-    const canPlay = !failed && introFinished && !reduced.matches && !paused && !document.hidden && inView;
-    if (!canPlay) { video.pause(); return; }
-    if (!initialized) {
-      initialized = true;
-      video.src = url.href;
-      video.load();
+  function create(video) {
+    const config = window.JackPortfolioMedia;
+    if (!video || typeof config.videoPath !== 'string') return null;
+    let url;
+    try { url = new URL(config.videoPath, document.baseURI); } catch (_) { return null; }
+    if (url.origin !== window.location.origin || !/\.(mp4|webm)$/i.test(url.pathname)) return null;
+    let status = 'idle';
+    let prepared = false;
+    let disposed = false;
+    let generation = 0;
+    const listeners = [];
+    const listen = (name, handler) => {
+      video.addEventListener(name, handler);
+      listeners.push(() => video.removeEventListener(name, handler));
+    };
+    function failed() {
+      if (disposed) return;
+      status = 'failed';
+      video.pause();
+      video.hidden = true;
+      video.classList.remove('is-playing');
     }
-    video.play().catch(() => { video.classList.remove('is-playing'); });
+    function play() {
+      if (disposed || status === 'ended' || status === 'failed' || status === 'stopped') return;
+      const run = generation;
+      try {
+        const result = video.play();
+        if (result?.catch) result.catch(() => { if (run === generation) failed(); });
+      } catch (_) { failed(); }
+    }
+    listen('playing', () => {
+      if (disposed || status === 'failed' || status === 'stopped') return;
+      status = 'playing';
+      video.hidden = false;
+      video.classList.add('is-playing');
+    });
+    listen('ended', () => {
+      if (disposed || status === 'failed' || status === 'stopped') return;
+      status = 'ended';
+      video.hidden = false;
+    });
+    listen('error', failed);
+    return {
+      start() {
+        if (disposed) return false;
+        generation++;
+        status = 'loading';
+        video.pause();
+        video.hidden = true;
+        video.classList.remove('is-playing');
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.loop = false;
+        if (!prepared) {
+          video.src = url.href;
+          video.load();
+          prepared = true;
+        }
+        try { video.currentTime = 0; } catch (_) { /* Metadata may still be loading. */ }
+        play();
+        return true;
+      },
+      sample() {
+        return {
+          status,
+          time: Number.isFinite(video.currentTime) ? video.currentTime : 0,
+          duration: Number.isFinite(video.duration) && video.duration > 0 ? video.duration : 0
+        };
+      },
+      pause() { if (!disposed) { generation++; video.pause(); } },
+      resume: play,
+      stop() {
+        generation++;
+        video.pause();
+        if (status !== 'ended' && status !== 'failed') status = 'stopped';
+      },
+      destroy() {
+        if (disposed) return;
+        disposed = true;
+        generation++;
+        video.pause();
+        listeners.forEach(remove => remove());
+        video.hidden = true;
+        video.classList.remove('is-playing');
+      }
+    };
   }
-  video.addEventListener('playing', () => {
-    video.hidden = false;
-    video.classList.add('is-playing');
-  });
-  video.addEventListener('error', () => {
-    failed = true;
-    video.hidden = true;
-    video.classList.remove('is-playing');
-    video.pause();
-  });
-  window.addEventListener('jack:intro-complete', () => { introFinished = true; syncPlayback(); });
-  document.addEventListener('visibilitychange', syncPlayback);
-  toggle?.addEventListener('click', () => { window.requestAnimationFrame(syncPlayback); });
-  reduced.addEventListener('change', syncPlayback);
-  if ('IntersectionObserver' in window && hero) {
-    const observer = new IntersectionObserver(entries => {
-      inView = entries[0].isIntersecting;
-      syncPlayback();
-    }, { threshold: 0.03 });
-    observer.observe(hero);
-  }
-  syncPlayback();
+  window.JackVideoIntro = Object.freeze({ create });
 })();

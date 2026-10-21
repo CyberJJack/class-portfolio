@@ -132,3 +132,78 @@ dialog{background:#121012;color:var(--ink);border:1px solid #75636b;padding:0;wi
 .hero-wordmark.has-image{width:min(460px,100%)}
 .hero-wordmark.has-image img{width:100%;max-width:none;height:auto;filter:drop-shadow(0 12px 22px #0009)}
 @media(max-width:700px){.hero-wordmark.has-image{width:300px;max-width:90%}}
+
+/* The supplied film plays once, then the held character breathes behind the UI. */
+.intro-overlay.is-active{animation-duration:var(--intro-safety,20s)}
+#intro-character-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;background:#000;transform:translate3d(0,-.4%,0) scale(1.012)}
+#intro-character-video[hidden]{display:none}
+#intro-canvas{z-index:1}
+.intro-topline,.intro-bottomline{z-index:2}
+.intro-actions{display:flex;align-items:center;gap:12px}
+#pause-intro{background:#130c11d9;padding:10px 13px;border:1px solid #98627366;color:#dfc7d1;font:10px var(--mono);min-height:38px}
+.hero-media{transform:translate3d(0,-.4%,0) scale(1.012);transform-origin:center}
+.video-holding #intro-character-video,.video-holding .hero-media{animation:raven-breathe 10s var(--ease-in-out) infinite;will-change:transform}
+.motion-paused #intro-character-video,.motion-paused .hero-media{animation-play-state:paused}
+.motion-paused .intro-overlay.is-active,.motion-suspended .intro-overlay.is-active{animation-play-state:paused}
+.motion-suspended #intro-character-video,.motion-suspended .hero-media{animation-play-state:paused}
+@keyframes raven-breathe{0%,100%{transform:translate3d(0,-.4%,0) scale(1.012)}50%{transform:translate3d(0,.4%,0) scale(1.02)}}
+@media(max-width:700px){
+  #intro-character-video{object-position:65% 50%}
+  #pause-intro{font-size:9px;padding:10px;min-height:38px}
+  .intro-actions{gap:8px}
+}
+@media(prefers-reduced-motion:reduce){
+  .video-holding #intro-character-video,.video-holding .hero-media{animation:none!important;transform:none;will-change:auto}
+}
+
+/* A single scene surface survives the intro/UI boundary. Its geometry, crop,
+   lighting and float phase do not change when the controls are revealed. */
+html{scrollbar-gutter:stable;overflow-x:hidden}
+html:has(body[data-intro-state="running"]){overflow-y:hidden}
+body{position:relative}
+body[data-intro-state="running"]{position:fixed;top:0;left:0;width:100%}
+body>.hero-media{position:absolute;inset:0 0 auto;height:100vh;height:100svh;width:100%;z-index:0;pointer-events:none;background:#000}
+.site-header,main,.site-footer{position:relative;z-index:1}
+.hero{background:transparent}
+.about{background:var(--bg)}
+.hero-shade{display:none}
+.intro-overlay{background:transparent}
+body[data-intro-state="running"]:has(#intro-character-video[hidden]) .intro-overlay{background:#000}
+body[data-intro-state="running"]>.site-header,
+body[data-intro-state="running"]>main,
+body[data-intro-state="running"]>.site-footer{visibility:hidden}
+#intro-character-video{object-position:50% 50%;transform:none;opacity:1;transition:none;z-index:1}
+.video-holding #intro-character-video{animation:none;will-change:auto}
+.hero-media #hero-poster{object-position:50% 50%}
+.hero-wordmark.has-image img{filter:none}
+.hero-copy{text-shadow:0 2px 16px #000b}
+.intro-complete .site-header,
+.intro-complete .hero-copy>.eyebrow,
+.intro-complete .hero-copy>h1,
+.intro-complete .hero-copy>p,
+.intro-complete .hero-copy>.primary-button,
+.intro-complete .hero-copy>.hero-tags,
+.intro-complete .hero-bottom,
+.intro-complete .motion-controls{animation:none;opacity:1;transform:none}
+@media(max-width:700px){
+  #intro-character-video,.hero-media #hero-poster{object-position:65% 50%}
+}
+
+/* Sparse, static feather details keep the archive tied to the red raven identity. */
+.feather-defs{position:absolute;overflow:hidden;pointer-events:none}
+.section-feather{display:block;pointer-events:none;overflow:visible;flex-shrink:0}
+.archive-title{position:relative}
+.feather--archive{position:absolute;right:-66px;top:-8px;width:48px;height:92px;transform:rotate(28deg);opacity:.72}
+.feather--digital{position:absolute;right:5%;bottom:25px;width:80px;height:176px;transform:rotate(24deg);opacity:.5}
+.digital-copy{position:relative;z-index:1}
+.about-feather-detail{display:flex;align-items:center;gap:18px;height:31px;margin-top:23px;pointer-events:none}
+.about-feather-detail>span{width:75px;height:1px;background:linear-gradient(90deg,#a53243,transparent)}
+.feather--about{width:24px;height:54px;transform:rotate(57deg);opacity:.65}
+@media(max-width:1050px) and (min-width:701px){.feather--archive{right:-50px;width:38px;opacity:.55}.feather--digital{right:3%;width:64px}}
+@media(max-width:700px){
+  .feather--archive{right:8px;top:-12px;width:42px;height:78px;opacity:.64}
+  .feather--digital{right:-5px;bottom:15px;width:58px;height:130px;opacity:.38}
+  .about-feather-detail{height:20px;margin-top:18px;gap:14px}
+  .about-feather-detail>span{width:59px}
+  .feather--about{width:20px;height:45px}
+}
