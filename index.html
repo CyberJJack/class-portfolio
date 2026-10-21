@@ -3,40 +3,47 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080e11">
-  <meta name="description" content="Jack / Cyan — a digital portfolio of p5.js experiments, TouchDesigner studies and creative computing.">
-  <title>Jack / Cyan — Digital Portfolio</title>
-  <link rel="icon" href="./favicon.svg?v=jack-cyan-2" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=jack-cyan-2">
-  <script src="./projects.js?v=jack-cyan-2" defer></script>
-  <script src="./app.js?v=jack-cyan-2" defer></script>
-  <script src="./motion.js?v=jack-cyan-2" defer></script>
+  <meta name="theme-color" content="#070708">
+  <meta name="description" content="Jack — a digital portfolio of p5.js experiments, TouchDesigner studies and creative computing.">
+  <title>Jack — Digital Portfolio</title>
+  <link rel="icon" href="./favicon.svg?v=raven-3" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css?v=raven-3">
+  <script src="./projects.js?v=raven-3" defer></script>
+  <script src="./app.js?v=raven-3" defer></script>
+  <script src="./portfolio-media.js?v=raven-3" defer></script>
+  <script src="./raven-overlay.js?v=raven-3" defer></script>
+  <script src="./motion.js?v=raven-3" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
   <div id="intro-overlay" class="intro-overlay" aria-label="Portfolio opening animation" aria-hidden="true" hidden>
     <canvas id="intro-canvas" aria-hidden="true"></canvas>
-    <div class="intro-topline"><span>JACK / CYAN</span><button id="skip-intro" type="button">Skip intro <span aria-hidden="true">↗</span></button></div>
+    <div class="intro-topline"><span>JACK</span><button id="skip-intro" type="button">Skip intro <span aria-hidden="true">↗</span></button></div>
     <div class="intro-bottomline"><span>DIGITAL PORTFOLIO</span><span>CODE / FORM / MOTION</span></div>
   </div>
   <header class="site-header">
-    <a class="brand name-brand" href="#top" aria-label="Jack / Cyan home"><span>Jack<small>Cyan</small></span></a>
+    <a class="brand name-brand" href="#top" aria-label="Jack home"><span>Jack</span></a>
     <nav aria-label="Main navigation"><a href="#work" class="nav-work">Work <span>09</span></a><a href="#digital">TouchDesigner</a><a href="#about">About</a></nav>
     <a class="header-link" href="https://editor.p5js.org/jkan349/collections/qvees2nPr" target="_blank" rel="noopener noreferrer">p5.js collection <span aria-hidden="true">↗</span></a>
   </header>
 
   <main id="top">
     <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true">
+        <img id="hero-poster" src="./hero-raven.webp?v=raven-3" width="1920" height="1080" alt="" fetchpriority="high">
+        <video id="hero-background-video" muted playsinline loop preload="none" hidden></video>
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-grid" aria-hidden="true"></div>
       <div class="hero-identity" id="hero-motion-region">
         <div class="identity-frame" aria-hidden="true"><span>+</span><span>+</span><span>+</span><span>+</span></div>
         <canvas id="hero-motion" aria-hidden="true"></canvas>
-        <div id="hero-wordmark" class="hero-wordmark"><span>Jack</span><small>Cyan</small></div>
-        <div class="identity-caption" aria-hidden="true"><span class="status-dot"></span> EXPERIMENTS IN DIGITAL FORM <span>01 / ∞</span></div>
+        <div id="hero-wordmark" class="hero-wordmark"><span class="wordmark-text">Jack</span><img id="hero-wordmark-image" src="./jack-wordmark.webp?v=raven-3" width="2172" height="724" alt="" aria-hidden="true" hidden></div>
+        <div class="identity-caption" aria-hidden="true"><span class="status-dot"></span> CODE / FORM / MOTION <span>01 / ∞</span></div>
       </div>
       <div class="hero-copy">
         <div class="eyebrow"><span class="status-dot"></span> JACK KAN / CREATIVE COMPUTING</div>
-        <h1 id="hero-title">Digital<br><em>Portfolio</em><span class="title-point">.</span></h1>
+        <h1 id="hero-title">Digital <em>Portfolio</em><span class="title-point">.</span></h1>
         <p>A space for experiments in code, interaction,<br class="desktop-break"> and digital form. Built one sketch at a time.</p>
         <a class="primary-button" href="#work">Explore the work <span aria-hidden="true">↘</span></a>
         <div class="hero-tags"><span>P5JS</span><i>/</i><span>TOUCHDESIGNER</span><i>/</i><span>MORE TO EXPLORE</span></div>
@@ -57,10 +64,10 @@
 
     <section class="digital section-shell" id="digital" aria-labelledby="digital-title"><div class="digital-signal" aria-hidden="true"><span>+</span><div class="signal-orbit"></div><b>TD</b><span>+</span></div><div class="digital-copy"><p class="section-kicker">02 / THE NEXT MEDIUM</p><h2 id="digital-title">TouchDesigner<span class="accent">.</span><br>A new signal.</h2><p>A space for future TouchDesigner experiments<br class="desktop-break"> in real-time visuals and digital motion.</p><span class="outlined-label"><span class="status-dot"></span> WORK TO BE ADDED</span></div><span class="digital-index" aria-hidden="true">NEXT / 02</span></section>
 
-    <section class="about section-shell" id="about" aria-labelledby="about-title"><div><p class="section-kicker">03 / THE PERSON BEHIND THE PIXELS</p><h2 id="about-title">Hi, I'm Jack<span class="accent">.</span><br>Also known as Cyan.</h2></div><div class="about-copy"><p>I’m exploring what happens when code becomes a creative medium. This portfolio brings together my class assignments, playful tests, and experiments in p5.js.</p><p>From portraits made with simple shapes to moving particles and three-dimensional studies, each sketch is another way to learn by making.</p><div class="about-links"><a href="https://github.com/CyanXart" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://editor.p5js.org/jkan349" target="_blank" rel="noopener noreferrer">p5.js <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="about section-shell" id="about" aria-labelledby="about-title"><div><p class="section-kicker">03 / THE PERSON BEHIND THE PIXELS</p><h2 id="about-title">Hi, I'm Jack<span class="accent">.</span><br>Making things move.</h2></div><div class="about-copy"><p>I’m exploring what happens when code becomes a creative medium. This portfolio brings together my class assignments, playful tests, and experiments in p5.js.</p><p>From portraits made with simple shapes to moving particles and three-dimensional studies, each sketch is another way to learn by making.</p><div class="about-links"><a href="https://github.com/CyanXart" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://editor.p5js.org/jkan349" target="_blank" rel="noopener noreferrer">p5.js <span aria-hidden="true">↗</span></a></div></div></section>
   </main>
 
-  <footer class="site-footer"><a class="brand name-brand" href="#top" aria-label="Jack / Cyan home"><span>Jack<small>Cyan</small></span></a><p>JACK KAN <span>/</span> CODE. PLAY. REPEAT.</p><a href="#top">BACK TO TOP <span aria-hidden="true">↑</span></a></footer>
+  <footer class="site-footer"><a class="brand name-brand" href="#top" aria-label="Jack home"><span>Jack</span></a><p>JACK KAN <span>/</span> CODE. PLAY. REPEAT.</p><a href="#top">BACK TO TOP <span aria-hidden="true">↑</span></a></footer>
 
   <dialog id="project-dialog" aria-labelledby="detail-title"><div class="dialog-top"><span id="detail-index" class="section-kicker"></span><button id="close-dialog" class="icon-button" aria-label="Close project">✕</button></div><div class="detail-layout"><div class="detail-preview"><div id="preview-host"></div><div class="preview-bottom"><span><span class="status-dot"></span> LIVE P5.JS SKETCH</span><a id="detail-full" target="_blank" rel="noopener noreferrer">Open full size ↗</a></div></div><div class="detail-copy"><p class="section-kicker" id="detail-category"></p><h2 id="detail-title"></h2><p id="detail-description"></p><div class="instruction-box"><span>TRY IT</span><p id="detail-instructions"></p></div><dl><div><dt>MEDIUM</dt><dd>p5.js / JavaScript</dd></div><div><dt>COLLECTION</dt><dd>Coding Class1</dd></div><div><dt>ORIGINAL TITLE</dt><dd id="detail-original"></dd></div></dl><a id="detail-source" class="primary-button" target="_blank" rel="noopener noreferrer">View source code <span aria-hidden="true">↗</span></a><p class="preview-note">Running the original sketch with p5.js. Use “Open full size” for more space, or view its original source in the editor.</p></div></div><div class="dialog-bottom"><button id="previous-project">← Previous</button><span id="detail-position"></span><button id="next-project">Next →</button></div></dialog>
 </body>

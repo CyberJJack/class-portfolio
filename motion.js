@@ -1,6 +1,6 @@
 /*
- * Original motion for Jack / Cyan, made for this portfolio.
- * Visual references: Jack's outlined-square portraits, Bezier studies and orbits.
+ * Original raven motion for Jack, made for this portfolio.
+ * Visual references: crimson topology, raven flight and frosted metal.
  * No third-party animation code or assets. Canvas 2D keeps the drawing compact;
  * the only animated DOM property is the intro overlay's compositor opacity.
  */
@@ -9,14 +9,14 @@
 
   const instances = new WeakMap();
   const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
-  const SESSION_KEY = 'jack-cyan-intro-v1';
+  const SESSION_KEY = 'jack-raven-intro-v1';
   const DEFAULTS = Object.freeze({
     speed: 0.6,
     intensity: 0.75,
     density: 38,
     dpr: 1.5,
-    color: '#67e6f5',
-    introDuration: 2400,
+    color: '#e32c45',
+    introDuration: 2800,
     interactive: true,
     autoplayIntro: true
   });
@@ -57,7 +57,7 @@
   function safeOptions(previous, partial) {
     const options = { ...previous };
     if (!partial || typeof partial !== 'object') return options;
-    const limits = { speed: [0.1, 1.5], intensity: [0, 1], density: [16, 64], dpr: [1, 1.5], introDuration: [1800, 3200] };
+    const limits = { speed: [0.1, 1.5], intensity: [0, 1], density: [16, 64], dpr: [1, 1.5], introDuration: [1800, 3000] };
     Object.keys(limits).forEach(key => {
       if (Number.isFinite(partial[key])) options[key] = clamp(partial[key], ...limits[key]);
     });
@@ -82,6 +82,10 @@
     const canvas = element.tagName === 'CANVAS' ? element : element.querySelector('canvas') || element.appendChild(document.createElement('canvas'));
     const context = canvas.getContext('2d', { alpha: true });
     if (!context) return null;
+    const flock = window.JackRavenOverlay ? window.JackRavenOverlay.create({ count: 480 }) : null;
+    const wordmarkImage = new Image();
+    wordmarkImage.onload = () => { if (flock) flock.setImage(wordmarkImage); };
+    wordmarkImage.src = './jack-wordmark.webp';
     canvas.setAttribute('aria-hidden', 'true');
 
     let options = safeOptions(DEFAULTS, initialOptions);
@@ -142,27 +146,15 @@
     }
 
     function createParticles() {
-      const count = Math.round(options.density * (finePointer ? 1 : 0.6));
-      particles = [];
-      for (let index = 0; index < count; index++) {
-        let x = seed(index * 7 + 5);
-        let y = seed(index * 9 + 13);
-        // Leave a quiet pocket behind the selectable Jack / Cyan wordmark.
-        if (x > 0.19 && x < 0.83 && y > 0.31 && y < 0.65) {
-          y = y < 0.48 ? 0.14 + y * 0.22 : 0.69 + y * 0.19;
-        }
-        particles.push({
-          x: width * x,
-          y: height * y,
-          size: 4 + seed(index + 19) ** 2 * 27,
-          phase: seed(index + 37) * Math.PI * 2,
-          alpha: 0.12 + seed(index + 8) * 0.33,
-          offsetX: 0,
-          offsetY: 0,
-          velocityX: 0,
-          velocityY: 0
-        });
-      }
+      const count = Math.round(options.density * (finePointer ? 0.48 : 0.28));
+      particles = Array.from({ length: count }, (_, index) => ({
+        x: width * seed(index * 7 + 5),
+        y: height * (index % 2 ? 0.1 + seed(index + 13) * 0.18 : 0.72 + seed(index + 18) * 0.2),
+        size: 3 + seed(index + 19) ** 2 * 11,
+        phase: seed(index + 37) * Math.PI * 2,
+        alpha: 0.15 + seed(index + 8) * 0.26,
+        offsetX: 0, offsetY: 0, velocityX: 0, velocityY: 0
+      }));
     }
 
     function resizeHero() {
@@ -186,99 +178,42 @@
       context.stroke();
     }
 
-    function orbitPoint(angle, radiusX, radiusY, rotation, centerX, centerY) {
-      const x = Math.cos(angle) * radiusX;
-      const y = Math.sin(angle) * radiusY;
-      context.translate(centerX + x * Math.cos(rotation) - y * Math.sin(rotation), centerY + x * Math.sin(rotation) + y * Math.cos(rotation));
-    }
-
     function drawHero(delta) {
       context.clearRect(0, 0, width, height);
       const motionTime = reduced ? 0 : time;
-      const intensity = options.intensity;
-      const centerX = width * 0.53;
-      const centerY = height * 0.47;
-      const radiusX = width * 0.41;
-      const radiusY = height * 0.29;
-      const rotation = -0.49;
-
-      // Curved construction lines: continuous and slow, never flashing.
-      strokeCurve(0.12, 0);
-      strokeCurve(0.055, 0.035);
-      context.save();
-      context.translate(centerX, centerY);
-      context.rotate(rotation);
-      context.beginPath();
-      context.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2);
-      context.strokeStyle = `rgba(${color},0.17)`;
-      context.lineWidth = 0.8;
-      context.stroke();
-      context.beginPath();
-      context.ellipse(0, 0, radiusX * 0.91, radiusY * 1.19, 0, 0.38, 2.25);
-      context.strokeStyle = `rgba(${color},0.08)`;
-      context.stroke();
-      context.restore();
-
-      for (let index = 0; index < 3; index++) {
-        context.save();
-        const angle = motionTime * (0.1 + index * 0.024) + index * 2.2 + 0.8;
-        orbitPoint(angle, radiusX, radiusY, rotation, centerX, centerY);
-        context.rotate(angle * 0.35);
-        const size = index === 0 ? 5 : 3;
-        context.fillStyle = `rgba(${color},${index === 0 ? 0.82 : 0.47})`;
-        context.fillRect(-size / 2, -size / 2, size, size);
-        context.strokeStyle = `rgba(${color},0.2)`;
-        context.strokeRect(-size - 2, -size - 2, size * 2 + 4, size * 2 + 4);
-        context.restore();
-      }
-
+      strokeCurve(0.09, 0.07);
+      strokeCurve(0.04, 0.11);
       const movementX = pointer.x - pointer.previousX;
       const movementY = pointer.y - pointer.previousY;
       const movementLength = movementX * movementX + movementY * movementY;
       const targetSpeed = delta > 0 ? Math.min(1200, Math.sqrt(movementLength) / delta) : 0;
       pointer.speed = lerp(pointer.speed, targetSpeed, 1 - Math.exp(-12 * delta));
-
-      for (let index = 0; index < particles.length; index++) {
-        const particle = particles[index];
-        const driftX = reduced ? 0 : Math.sin(motionTime * 0.2 + particle.phase) * 5 * intensity;
-        const driftY = reduced ? 0 : Math.cos(motionTime * 0.17 + particle.phase) * 6 * intensity;
-        const baseX = particle.x + driftX;
-        const baseY = particle.y + driftY;
-
+      particles.forEach((particle, index) => {
+        const driftX = reduced ? 0 : Math.sin(motionTime * 0.2 + particle.phase) * 14 * options.intensity;
+        const driftY = reduced ? 0 : Math.cos(motionTime * 0.17 + particle.phase) * 8 * options.intensity;
+        const baseX = particle.x + driftX, baseY = particle.y + driftY;
         if (delta > 0) {
           if (pointer.active && finePointer && options.interactive && pointer.speed > 1) {
-            // Distance to the movement segment makes a small wake, not a hole.
-            const segment = movementLength > 0 ? clamp(((baseX - pointer.previousX) * movementX + (baseY - pointer.previousY) * movementY) / movementLength, 0, 1) : 1;
-            const differenceX = baseX - (pointer.previousX + movementX * segment);
-            const differenceY = baseY - (pointer.previousY + movementY * segment);
-            const distance = Math.hypot(differenceX, differenceY);
-            const radius = Math.min(105, width * 0.21);
+            const dx = baseX - pointer.x, dy = baseY - pointer.y;
+            const distance = Math.hypot(dx, dy), radius = Math.min(85, width * 0.2);
             if (distance > 0 && distance < radius) {
-              const force = (1 - distance / radius) ** 2 * Math.min(pointer.speed, 700) * intensity;
-              particle.velocityX += differenceX / distance * force * delta * 1.2;
-              particle.velocityY += differenceY / distance * force * delta * 1.2;
+              const force = (1 - distance / radius) ** 2 * Math.min(pointer.speed, 700) * options.intensity;
+              particle.velocityX += dx / distance * force * delta;
+              particle.velocityY += dy / distance * force * delta;
             }
           }
           // Decorative spring: mass 1, stiffness 100, damping 10.
           particle.velocityX += (-100 * particle.offsetX - 10 * particle.velocityX) * delta;
           particle.velocityY += (-100 * particle.offsetY - 10 * particle.velocityY) * delta;
-          particle.offsetX = clamp(particle.offsetX + particle.velocityX * delta, -28, 28);
-          particle.offsetY = clamp(particle.offsetY + particle.velocityY * delta, -28, 28);
+          particle.offsetX = clamp(particle.offsetX + particle.velocityX * delta, -20, 20);
+          particle.offsetY = clamp(particle.offsetY + particle.velocityY * delta, -20, 20);
         }
-
-        const opacity = particle.alpha * (0.83 + Math.sin(motionTime * 0.38 + particle.phase) * 0.17);
-        context.save();
-        context.translate(baseX + particle.offsetX, baseY + particle.offsetY);
-        context.rotate(Math.sin(particle.phase) * 0.17);
-        context.strokeStyle = `rgba(${color},${opacity})`;
-        context.lineWidth = index % 8 === 0 ? 1.2 : 0.7;
-        context.strokeRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size);
-        if (index % 9 === 0) {
-          context.fillStyle = `rgba(${color},0.15)`;
-          context.fillRect(-1, -1, 2, 2);
-        }
-        context.restore();
-      }
+        if (window.JackRavenOverlay) window.JackRavenOverlay.raven(
+          context, baseX + particle.offsetX, baseY + particle.offsetY, particle.size,
+          motionTime * 2.4 + particle.phase, Math.sin(particle.phase) * 0.2,
+          particle.alpha, index % 4 === 0
+        );
+      });
       pointer.previousX = pointer.x;
       pointer.previousY = pointer.y;
     }
@@ -291,97 +226,33 @@
       introCanvas.width = Math.round(introWidth * introRatio);
       introCanvas.height = Math.round(introHeight * introRatio);
       introContext.setTransform(introRatio, 0, 0, introRatio, 0, 0);
-
-      const sampler = document.createElement('canvas');
-      sampler.width = Math.round(introWidth);
-      sampler.height = Math.round(introHeight);
-      const sampleContext = sampler.getContext('2d', { willReadFrequently: true });
-      if (!sampleContext) return;
       introFontSize = Math.min(introWidth * 0.31, introHeight * 0.43, 330);
-      sampleContext.font = `800 ${introFontSize}px Arial, sans-serif`;
-      sampleContext.textAlign = 'center';
-      sampleContext.textBaseline = 'middle';
-      sampleContext.fillStyle = '#fff';
-      sampleContext.fillText('Jack', introWidth / 2, introHeight * 0.45);
-      const pixels = sampleContext.getImageData(0, 0, sampler.width, sampler.height).data;
-      const spacing = Math.max(5, Math.round(introFontSize / (finePointer ? 30 : 23)));
-      const targets = [];
-      for (let y = spacing; y < sampler.height; y += spacing) {
-        for (let x = spacing; x < sampler.width; x += spacing) {
-          if (pixels[(y * sampler.width + x) * 4 + 3] > 150) targets.push({ x, y });
-        }
-      }
-
-      const stride = Math.max(1, Math.ceil(targets.length / (finePointer ? 1050 : 620)));
-      introParticles = [];
-      for (let index = 0; index < targets.length; index += stride) {
-        const target = targets[index];
-        const angle = seed(index + 39) * Math.PI * 2;
-        const distance = Math.max(introWidth, introHeight) * (0.32 + seed(index + 101) * 0.48);
-        introParticles.push({
-          x: target.x,
-          y: target.y,
-          startX: target.x + Math.cos(angle) * distance,
-          startY: target.y + Math.sin(angle) * distance,
-          bend: (seed(index + 71) - 0.5) * introFontSize * 0.6,
-          size: spacing * (0.42 + seed(index + 29) * 0.24),
-          delay: (index % 4) * 60,
-          alpha: 0.55 + seed(index + 8) * 0.45
-        });
-      }
-    }
-
-    function spacedText(text, x, y, spacing) {
-      const fullWidth = introContext.measureText(text).width + (text.length - 1) * spacing;
-      let left = x - fullWidth / 2;
-      for (let index = 0; index < text.length; index++) {
-        introContext.fillText(text[index], left, y);
-        left += introContext.measureText(text[index]).width + spacing;
-      }
+      introParticles = [{ ready: true }];
     }
 
     function drawIntro(elapsed) {
-      introContext.clearRect(0, 0, introWidth, introHeight);
       const duration = options.introDuration;
-      const departure = easeInOut((elapsed - duration * 0.68) / (duration * 0.32));
-      const visibility = easeOut(elapsed / 200);
-      const state = elapsed < duration * 0.5 ? 'assembling' : elapsed < duration * 0.68 ? 'holding' : 'departing';
+      const name = document.getElementById('hero-wordmark');
+      const bounds = name ? name.getBoundingClientRect() : null;
+      const state = elapsed < duration * 0.4 ? 'assembling' : elapsed < duration * 0.6 ? 'holding' : 'departing';
       if (overlay.dataset.introState !== state) overlay.dataset.introState = state;
-
-      introContext.save();
-      introContext.translate(introWidth / 2, introHeight * 0.46);
-      introContext.rotate(-0.45);
-      introContext.strokeStyle = `rgba(${color},${0.17 * visibility * (1 - departure)})`;
-      introContext.lineWidth = 0.8;
-      introContext.beginPath();
-      introContext.ellipse(0, 0, introFontSize * 1.23, introFontSize * 0.66, 0, 0, Math.PI * 2);
-      introContext.stroke();
-      introContext.restore();
-
-      for (let index = 0; index < introParticles.length; index++) {
-        const particle = introParticles[index];
-        const assembly = easeOut((elapsed - particle.delay) / (duration * 0.43));
-        const settled = assembly * (1 - departure);
-        const x = lerp(particle.startX, particle.x, settled);
-        const y = lerp(particle.startY, particle.y, settled) + Math.sin(settled * Math.PI) * particle.bend;
-        const opacity = visibility * particle.alpha * (1 - departure * 0.8);
-        introContext.fillStyle = `rgba(${color},${opacity})`;
-        const size = particle.size * (0.7 + settled * 0.3);
-        introContext.fillRect(x - size / 2, y - size / 2, size, size);
+      if (flock) flock.render(introContext, elapsed / duration * 5.7, {
+        width: introWidth, height: introHeight,
+        wordWidth: Math.min(introWidth * 0.62, 1000),
+        finalX: bounds ? bounds.left + bounds.width / 2 : introWidth * 0.28,
+        finalY: bounds ? bounds.top + bounds.height / 2 : introHeight * 0.3,
+        finalWidth: bounds ? bounds.width : introWidth * 0.35
+      });
+      else {
+        introContext.clearRect(0, 0, introWidth, introHeight);
+        introContext.fillStyle = '#e32c45'; introContext.font = `900 ${introFontSize}px Arial, sans-serif`;
+        introContext.textAlign = 'center'; introContext.textBaseline = 'middle';
+        introContext.fillText('Jack', introWidth / 2, introHeight * 0.48);
       }
-
-      introContext.font = `400 ${Math.max(17, introFontSize * 0.12)}px Arial, sans-serif`;
-      introContext.textAlign = 'left';
-      introContext.textBaseline = 'middle';
-      introContext.fillStyle = `rgba(${color},${easeOut((elapsed - 400) / 500) * (1 - departure) * 0.82})`;
-      spacedText('Cyan', introWidth / 2, introHeight * 0.45 + introFontSize * 0.52, introFontSize * 0.035);
-
       if (elapsed >= duration - 240 && !fadeAnimation && overlay.animate) {
         const run = introRun;
         fadeAnimation = overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, easing: EASE_OUT, fill: 'forwards' });
-        fadeAnimation.finished.then(() => {
-          if (run === introRun && introActive) finishIntro();
-        }).catch(() => {});
+        fadeAnimation.finished.then(() => { if (run === introRun && introActive) finishIntro(); }).catch(() => {});
       } else if (elapsed >= duration - 240 && !overlay.animate) {
         overlay.style.opacity = String(1 - easeOut((elapsed - duration + 240) / 240));
       }
@@ -395,6 +266,9 @@
     }
 
     function finishIntro() {
+      document.body.classList.add('intro-complete');
+      document.body.dataset.introState = 'complete';
+      window.dispatchEvent(new CustomEvent('jack:intro-complete'));
       if (!overlay) return;
       const hadIntro = introActive;
       introActive = false;
@@ -429,6 +303,8 @@
       if (!introParticles.length) return false;
       markSeen();
       introActive = true;
+      document.body.classList.remove('intro-complete');
+      document.body.dataset.introState = 'running';
       introStart = performance.now();
       introRun++;
       overlay.hidden = false;
@@ -615,10 +491,10 @@
     return controller;
   }
 
-  window.CyanMotion = Object.freeze({ mount });
+  window.JackMotion = Object.freeze({ mount });
   function boot() {
     const surface = document.getElementById('hero-motion');
-    if (surface) window.cyanMotion = mount(surface);
+    if (surface) window.jackMotion = mount(surface);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();

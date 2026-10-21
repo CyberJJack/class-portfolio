@@ -1,35 +1,46 @@
-# Jack / Cyan — Digital Portfolio
+# Jack — Digital Portfolio
 
-A digital portfolio for Jack / Cyan. Graphite, cyan, industrial glass, and nine real p5.js sketches from [Coding Class1](https://editor.p5js.org/jkan349/collections/qvees2nPr).
+Jack's class portfolio: a black and crimson raven theme, a character background, machined silver and frosted glass details, and nine real p5.js works from [Coding Class1](https://editor.p5js.org/jkan349/collections/qvees2nPr). TouchDesigner has an empty state until real work is added. Original sketch colors and source files are preserved.
 
-## Edit the portfolio
+## Editing
 
-- `index.html`: introduction, About text, navigation and future digital work section.
-- `styles.css`: responsive layout, color palette and typography.
-- `projects.js`: all project titles, descriptions, p5.js IDs and thumbnails. To add a work, add its catalog entry here, its exact original `sketch-ID.js` file and required assets, plus an allowlist entry in `sketch-runtime.js`. Set `medium` to `p5js`; the gallery counts are calculated automatically. TouchDesigner currently has an honest empty state until real projects are added.
-- `app.js`: filters, accessible project dialog and live p5.js previews.
-- `sketch.html`, `sketch-runtime.js`, `sketch-*.js`: responsive live viewer and the nine original sketch scripts. Original code is preserved; display sizing adapts the canvas to the viewer.
-- `p5.min.js`: the local official p5.js 2.3.2 runtime, with its original license header.
-- `motion.js`: original Canvas 2D opening sequence and quiet hero animation, inspired by the coursework’s outlined squares, Bézier curves and orbital systems.
-- The large Jack / small Cyan wordmark is selectable HTML text; no generated logo image is used.
-- `favicon.svg`: the site icon.
+- `index.html`: navigation, introduction, About text, and the future TouchDesigner section.
+- `styles.css`: responsive layout, interface palette, typography, and the brief staggered interface entrance.
+- `projects.js`: real project titles, descriptions, p5.js IDs, and cover images. To add work, add its catalog entry, original `sketch-ID.js` and assets, and an allowlist entry in `sketch-runtime.js`. Counts update automatically.
+- `app.js`: filters, project dialog, and live sketch previews.
+- `sketch.html`, `sketch-runtime.js`, `sketch-*.js`: the local viewer and nine original scripts. Display sizing adapts to the viewer; original artwork is unchanged.
+- `p5.min.js`: official p5.js 2.3.2 with its license header.
+- `hero-raven.webp`: static character background and the video fallback.
+- `jack-wordmark.webp`: independent transparent name artwork. Selectable HTML Jack text remains the fallback.
+- `raven-overlay.js`, `motion.js`: independent canvas crow and particle effects. The name layer is separate from the character background and video.
+- `portfolio-media.js`: optional video configuration and pause / reduced-motion handling.
+- `favicon.svg`: the crimson raven site mark.
 
-The displayed titles are edited for readability; each project dialog also preserves the original p5.js title. AI-assisted coursework remains labeled. If a sketch screenshot is unavailable, its cover is explicitly marked “SCHEMATIC COVER”; the real sketch is shown in the project preview.
+Displayed project titles are edited for clarity; each dialog preserves the original title. AI-assisted coursework stays labeled. A missing sketch capture is labeled “SCHEMATIC COVER”; opening the project runs its real code.
 
-## Preview
+## Character video: awaiting the Seedance export
 
-Serve this folder with any static server, such as `python3 -m http.server 8080`, and visit `http://localhost:8080`.
+The site currently uses the static `hero-raven.webp` poster. No Seedance video has been generated or supplied. The hidden background video has no source, so it does not request a missing file.
 
-## Publish
+When the final video is ready:
 
-GitHub Pages: Settings → Pages → Deploy from a branch → `main` → `/ (root)`. There is no build step. All site paths are relative, so the site works at a repository subpath.
+1. Save the export as `assets/intro-raven.mp4` inside this folder (create `assets` if needed). Use an H.264 MP4 for broad browser support; a local `.webm` is also accepted.
+2. Change `videoPath: null` in `portfolio-media.js` to `videoPath: './assets/intro-raven.mp4'`.
+3. Keep the character render composed on the right. Jack and the particles are drawn as their own layer; do not bake the website navigation or body text into the video.
+4. Serve and preview the site. The video starts muted after the opening finishes, loops behind the interface, pauses offscreen / in a hidden tab / with Pause motion, and stays off for reduced motion. If playback fails, the static poster stays visible.
 
-The live previews run the original source locally using the included p5.js runtime and model assets. They are loaded only when opening a project; closing a project stops its iframe. Original p5.js editor links remain available for every work. Google Fonts is optional, with system fonts as a fallback. Future digital works are described as upcoming rather than presented as completed projects.
+`#hero-background-video` is the source-free muted, playsinline video element; `#hero-poster` is its permanent poster layer. `jack:intro-complete` is dispatched by `motion.js` when the opening finishes or is skipped. The `intro-complete` body class triggers the interface's 260 ms entrance, staggered by 50 ms. Content is visible when JavaScript is unavailable.
 
-Original coursework belongs to its respective creator. Referenced libraries and platforms retain their own terms and licenses.
+## Preview and publish
 
-## Motion
+Serve this folder with a static server, for example `python3 -m http.server 8080`, and open `http://localhost:8080`.
 
-The opening runs once per browser session (about 2.4 seconds). Use Replay intro to see it again, Skip intro or Escape to dismiss it, and Pause motion to stop the ambient hero. System reduced-motion preferences skip the opening and show a static hero. Drawing pauses when hidden or offscreen. Optional session storage failures do not block navigation.
+For GitHub Pages, select Settings → Pages → Deploy from a branch → `main` → `/ (root)`. There is no build step. Paths are relative so the site works below a repository subpath.
 
-`window.cyanMotion` exposes `updateOptions`, `pause`, `resume`, `replayIntro`, and `destroy`. Settings in `motion.js` include speed, intensity, density, color, DPR cap, and intro duration. The animation is an original implementation; no third-party effect or shader source is copied.
+Live previews load only when a project opens; closing it stops its iframe. Each project retains its original editor link. Google Fonts is optional, with system font fallbacks. Future work is described as upcoming.
+
+## Motion and accessibility
+
+The opening can be skipped, replayed, or dismissed with Escape. Pause motion stops ambient effects; system reduced-motion preferences skip the opening and retain a static background. Drawing pauses when hidden or offscreen. Optional session storage failures do not block the page.
+
+The Jack name and crow particle layer are independent of the character still or future video. All primary navigation, categories, and project details remain HTML. Original coursework belongs to its creator; referenced libraries and platforms retain their own terms and licenses.
