@@ -27,7 +27,7 @@ The held character receives a subtle ten-second breathing movement: vertical off
 
 Pause freezes both video and effects; Replay restarts and resumes the full sequence. Skip and Escape reveal the portfolio immediately, using the final poster if playback was interrupted before the last frame. Hidden tabs suspend the timeline; reduced motion uses a static background. Failed or stalled video playback uses the lightweight name reveal alone, with a deadline to keep content accessible. `jack:intro-complete` is dispatched after completion or Skip. Content is visible without JavaScript.
 
-Production deployment target: https://cyanxart.github.io/class-portfolio/. The release includes the supplied video, feather metal wordmark, two-second light reveal and static red-feather details in the lower sections.
+Production deployment target: https://cyberjjack.github.io/class-portfolio/. The release includes the supplied video, feather metal wordmark, two-second light reveal and static red-feather details in the lower sections.
 
 ## Preview and publish
 
