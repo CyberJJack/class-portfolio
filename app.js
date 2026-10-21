@@ -5,11 +5,11 @@
   const dialog = document.querySelector('#project-dialog');
   const previewHost = document.querySelector('#preview-host');
   const format = number => String(number).padStart(2, '0');
-  let activeFilter = 'all';
+  let activeFilter = 'p5js';
   let currentProject = null;
   let lastTrigger = null;
 
-  const filteredProjects = () => projects.filter(project => activeFilter === 'all' || project.category === activeFilter);
+  const filteredProjects = () => projects.filter(project => (project.medium || 'p5js') === activeFilter);
   const externalLink = (id, mode) => `https://editor.p5js.org/jkan349/${mode}/${encodeURIComponent(id)}`;
 
   // Schematic fallback covers are used only until an actual sketch capture is available.
@@ -44,6 +44,8 @@
   function renderProjects() {
     const visible = filteredProjects();
     grid.replaceChildren();
+    document.querySelector('#empty-medium').hidden = visible.length > 0;
+    grid.hidden = visible.length === 0;
     visible.forEach((project, index) => {
       const article = document.createElement('article'); article.className = 'project-card'; article.style.animationDelay = `${index * 25}ms`;
       const button = document.createElement('button'); button.className = 'project-button'; button.type = 'button'; button.setAttribute('aria-label', `Open ${project.title}`); button.setAttribute('aria-haspopup', 'dialog');
@@ -60,7 +62,8 @@
       const type = document.createElement('p'); type.className = 'project-type'; type.textContent = `${project.type} / P5.JS`;
       button.append(cover, meta, type); button.addEventListener('click', () => openProject(project, button)); article.append(button); grid.append(article);
     });
-    document.querySelector('#filter-status').textContent = `${visible.length} projects shown`;
+    const mediumLabel = activeFilter === 'touchdesigner' ? 'TouchDesigner' : 'p5js';
+    document.querySelector('#filter-status').textContent = visible.length ? `${visible.length} ${mediumLabel} projects shown` : `${mediumLabel} work will be added here soon`;
     document.querySelector('#archive-count').textContent = format(projects.length);
   }
 
@@ -92,10 +95,11 @@
   document.querySelector('#previous-project').addEventListener('click',()=>changeProject(-1));
   document.querySelector('#next-project').addEventListener('click',()=>changeProject(1));
   document.querySelectorAll('.filter').forEach(button=>{
-    const count=projects.filter(project=>button.dataset.filter==='all'||project.category===button.dataset.filter).length;
+    const count=projects.filter(project=>(project.medium || 'p5js')===button.dataset.filter).length;
     button.querySelector('span').textContent=format(count);
     button.addEventListener('click',()=>{activeFilter=button.dataset.filter;document.querySelectorAll('.filter').forEach(filter=>{const active=filter===button;filter.classList.toggle('active',active);filter.setAttribute('aria-pressed',String(active));});renderProjects();});
   });
+  document.querySelector('#show-p5js').addEventListener('click', () => document.querySelector('[data-filter="p5js"]').click());
   document.querySelector('.nav-work span').textContent = format(projects.length);
   renderProjects();
 })();
