@@ -207,3 +207,14 @@ body[data-intro-state="running"]>.site-footer{visibility:hidden}
   .about-feather-detail>span{width:59px}
   .feather--about{width:20px;height:45px}
 }
+
+/* Alpha name: a single full-frame plane travels into the existing scene slot. */
+body{overflow-x:clip}
+#intro-name-stage{position:absolute;left:0;top:0;width:100%;height:100vh;height:100svh;z-index:75;pointer-events:none;transform-origin:0 0;isolation:isolate}
+#intro-name-stage video,#intro-name-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:50% 50%;display:block;opacity:1;transition:none;filter:none}
+#intro-name-stage [hidden],#intro-name-stage[hidden]{display:none!important}
+#intro-name-still{z-index:1}
+.alpha-name-ready #hero-wordmark-image{visibility:hidden}
+body[data-intro-state="complete"] #intro-name-stage{z-index:2}
+.intro-overlay.is-active{animation:none}
+@media(prefers-reduced-motion:reduce){#intro-name-stage{display:none!important}.alpha-name-ready #hero-wordmark-image{visibility:visible}}

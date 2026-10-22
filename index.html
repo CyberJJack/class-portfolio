@@ -7,12 +7,11 @@
   <meta name="description" content="Jack — a digital portfolio of p5.js experiments, TouchDesigner studies and creative computing.">
   <title>Jack — Digital Portfolio</title>
   <link rel="icon" href="./favicon.svg?v=seamless-line-1" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=final-feathers-1">
+  <link rel="stylesheet" href="./styles.css?v=alpha-name-7">
   <script src="./projects.js?v=seamless-line-1" defer></script>
   <script src="./app.js?v=seamless-line-1" defer></script>
-  <script src="./portfolio-media.js?v=seamless-line-1" defer></script>
-  <script src="./raven-overlay.js?v=seamless-line-1" defer></script>
-  <script src="./motion.js?v=seamless-line-1" defer></script>
+  <script src="./portfolio-media.js?v=alpha-name-7" defer></script>
+  <script src="./motion.js?v=alpha-name-7" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
@@ -20,8 +19,11 @@
     <img id="hero-poster" src="./hero-video-final.webp?v=seamless-line-1" width="1920" height="1080" alt="" fetchpriority="high">
     <video id="intro-character-video" muted playsinline preload="metadata" aria-hidden="true" hidden></video>
   </div>
+  <div id="intro-name-stage" aria-hidden="true" hidden>
+    <video id="intro-name-video" muted playsinline preload="auto" hidden></video>
+    <img id="intro-name-still" width="1920" height="1080" alt="" hidden>
+  </div>
   <div id="intro-overlay" class="intro-overlay" aria-label="Portfolio opening animation" aria-hidden="true" hidden>
-    <canvas id="intro-canvas" aria-hidden="true"></canvas>
     <div class="intro-topline"><span>JACK</span><div class="intro-actions"><button id="pause-intro" type="button" aria-pressed="false">Pause</button><button id="skip-intro" type="button">Skip intro <span aria-hidden="true">↗</span></button></div></div>
     <div class="intro-bottomline"><span>DIGITAL PORTFOLIO</span><span>CODE / FORM / MOTION</span></div>
   </div>
@@ -38,7 +40,7 @@
       <div class="hero-identity" id="hero-motion-region">
         <div class="identity-frame" aria-hidden="true"><span>+</span><span>+</span><span>+</span><span>+</span></div>
         <canvas id="hero-motion" aria-hidden="true"></canvas>
-        <div id="hero-wordmark" class="hero-wordmark"><span class="wordmark-text">Jack</span><img id="hero-wordmark-image" src="./jack-wordmark.webp?v=seamless-line-1" width="2172" height="724" alt="" aria-hidden="true" hidden></div>
+        <div id="hero-wordmark" class="hero-wordmark"><span class="wordmark-text">Jack</span><img id="hero-wordmark-image" src="./jack-wordmark.webp?v=alpha-name-7" width="1146" height="475" alt="" aria-hidden="true" hidden></div>
         <div class="identity-caption" aria-hidden="true"><span class="status-dot"></span> CODE / FORM / MOTION <span>01 / ∞</span></div>
       </div>
       <div class="hero-copy">
