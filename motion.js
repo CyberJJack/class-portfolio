@@ -39,6 +39,9 @@
     let reduced = reduceQuery.matches;
     let paused = false;
     let active = false;
+    // A run that reaches a phone layout keeps a static name, even if the
+    // viewport widens again. Explicit desktop Replay can start a new flight.
+    let directName = window.innerWidth <= 700;
     let nameStarted = false;
     let departed = false;
     let staticName = false;
@@ -55,7 +58,7 @@
     });
     const name = window.JackVideoIntro.create(nameElement, {
       path: source.path,
-      onPlaying: () => { if (nameStarted && !staticName) stage.hidden = false; },
+      onPlaying: () => { if (nameStarted && !staticName && !directName) stage.hidden = false; },
       onEnded: () => handoffStill(),
       onError: () => { if (nameStarted) skipIntro(); }
     });
@@ -87,6 +90,21 @@
       departure.cancel();
       departure = null;
     }
+    function useStaticName() {
+      directName = true;
+      generation++;
+      cancelDeparture();
+      name.stop();
+      nameStarted = false;
+      staticName = true;
+      stage.hidden = true;
+      nameElement.hidden = true;
+      still.hidden = true;
+      stage.dataset.surface = 'static';
+      document.body.classList.remove('alpha-name-ready');
+      progressKey = '';
+      clearSafety();
+    }
     function finalTransform() {
       const rect = target.getBoundingClientRect();
       const width = stage.clientWidth;
@@ -116,7 +134,7 @@
       overlay.setAttribute('aria-hidden', 'true');
       overlay.dataset.introState = 'complete';
       stage.dataset.phase = 'scene';
-      alignFinal();
+      if (!directName) alignFinal();
       try { sessionStorage.setItem(SESSION_KEY, 'seen'); } catch (_) { /* Optional storage. */ }
       if (hadIntro && overlay.contains(document.activeElement)) {
         const focus = priorFocus && priorFocus !== document.body && document.contains(priorFocus) ? priorFocus : replay;
@@ -130,7 +148,7 @@
       // Both elements retain identical dimensions, parent transform and placement.
       // Leave the last native frame up if the still has not finished decoding.
       stillDecoded.then(() => {
-        if (destroyed || run !== generation || !nameStarted || staticName || !stillReady) return;
+        if (destroyed || run !== generation || directName || !nameStarted || staticName || !stillReady) return;
         staticName = true;
         still.hidden = false;
         nameElement.hidden = true;
@@ -139,7 +157,7 @@
       });
     }
     function depart() {
-      if (departure || departed || !active) return;
+      if (directName || departure || departed || !active) return;
       const destination = finalTransform();
       if (!destination) return;
       document.body.classList.add('alpha-name-ready');
@@ -161,6 +179,11 @@
     }
     function startName() {
       if (!active || nameStarted || paused || document.hidden) return;
+      if (directName) {
+        useStaticName();
+        revealUI();
+        return;
+      }
       nameStarted = true;
       stage.dataset.surface = 'video';
       stage.dataset.phase = 'assembling';
@@ -209,6 +232,7 @@
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       paused = false;
       active = true;
+      directName = window.innerWidth <= 700;
       departed = staticName = nameStarted = false;
       progressKey = '';
       progressAt = 0;
@@ -237,7 +261,9 @@
     }
     function resumeMedia() {
       if (paused || reduced || document.hidden) return;
-      if (active) character.resume();
+      // Mobile reveals the UI before the character's native tail has ended.
+      // That same surface must still resume after Pause or tab suspension.
+      if (active || directName) character.resume();
       if (nameStarted && !staticName) name.resume();
       departure?.play();
       progressKey = '';
@@ -274,6 +300,14 @@
       if (document.hidden) pauseMedia(); else resumeMedia();
     });
     listen(window, 'resize', () => {
+      if (window.innerWidth <= 700) {
+        useStaticName();
+        const shot = character.sample();
+        if (active && !paused && !document.hidden &&
+            (shot.time >= config.overlayStart || ['ended', 'failed'].includes(shot.status))) revealUI();
+        else { armSafety(); schedule(); }
+        return;
+      }
       if (departed && !stage.hidden) alignFinal();
       else if (departure) {
         // Keep the currently displayed transform, then finish against new bounds.
