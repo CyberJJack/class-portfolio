@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="dark">
+  <title>添加 p5.js 作品 · Jack</title>
+  <link rel="stylesheet" href="./manage.css?v=manager-1">
+  <script defer src="./projects.js"></script>
+  <script defer src="./project-links.js?v=manager-1"></script>
+  <script defer src="./manage.js?v=manager-1"></script>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand" href="./">Jack<span>DIGITAL PORTFOLIO</span></a>
+    <a class="back-link" href="./#work">返回作品集 <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="introduction" aria-labelledby="page-title">
+      <p class="kicker">ARCHIVE / ADD A WORK</p>
+      <h1 id="page-title">下一个作品。<span>从链接开始。</span></h1>
+      <p class="intro-copy">填好 p5.js 链接，生成作品资料，再到你的 GitHub 提交。已有的作品会保留。</p>
+      <ol class="steps" aria-label="添加作品的三个步骤">
+        <li><b>01</b><span>填写链接和资料<strong>加入下方待添加列表</strong></span></li>
+        <li><b>02</b><span>复制完整 JSON<strong>包含已有和新增作品</strong></span></li>
+        <li><b>03</b><span>到 GitHub 粘贴并 Commit<strong>发布完成后网站才会更新</strong></span></li>
+      </ol>
+      <p class="notice">这个页面公开可见，只是资料生成工具。它不会直接保存网站，也不需要密码或 token；只有拥有仓库写入权限的 GitHub 账号才能提交更新。</p>
+    </section>
+
+    <p id="load-status" class="load-status" role="status">正在读取现有作品，请稍候…</p>
+
+    <div class="editor-layout">
+      <section class="panel" aria-labelledby="form-title">
+        <div class="panel-top"><p class="kicker">01 / WORK DETAILS</p><span class="panel-dot" aria-hidden="true"></span></div>
+        <h2 id="form-title">添加一个 p5.js 作品</h2>
+        <form id="work-form">
+          <fieldset id="work-fields" disabled>
+            <label for="work-link">作品链接 <span>必填</span></label>
+            <input id="work-link" name="link" type="url" required maxlength="2048" autocomplete="off" placeholder="https://editor.p5js.org/你的账号/sketches/作品ID" aria-describedby="link-help">
+            <p id="link-help" class="field-help">支持 editor.p5js.org 的 sketches、full、embed 链接。请在 p5.js 中确认作品已公开，访客才能播放。</p>
+
+            <label for="work-title">作品名称 <span>必填</span></label>
+            <input id="work-title" name="title" required maxlength="120" placeholder="例如：Orbit Study">
+
+            <label for="work-type">作品类型 <span>必填</span></label>
+            <input id="work-type" name="type" required maxlength="80" value="CREATIVE CODING" placeholder="例如：INTERACTIVE SYSTEM">
+
+            <label for="work-description">作品介绍</label>
+            <textarea id="work-description" name="description" rows="3" maxlength="2000" placeholder="这个作品探索了什么？"></textarea>
+
+            <label for="work-instructions">操作方式</label>
+            <textarea id="work-instructions" name="instructions" rows="2" maxlength="1000" placeholder="例如：移动鼠标改变轨道，点击生成新的粒子。"></textarea>
+
+            <label for="work-image">封面图片 <span>选填</span></label>
+            <input id="work-image" name="image" maxlength="2048" autocomplete="off" placeholder="https://… 或 assets/my-cover.webp" aria-describedby="image-help">
+            <p id="image-help" class="field-help">可填 HTTPS 图片网址，或已上传到仓库的相对路径。留空时网站会生成示意封面；这里只填写路径，不上传图片。</p>
+
+            <button class="primary-button" type="submit">加入待添加列表 <span aria-hidden="true">＋</span></button>
+          </fieldset>
+          <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="panel output-panel" aria-labelledby="draft-title">
+        <div class="panel-top"><p class="kicker">02 / PREVIEW &amp; EXPORT</p><span id="draft-count" class="count">00</span></div>
+        <h2 id="draft-title">完整更新文件</h2>
+        <p class="panel-copy">内置作品保持原样。下面的文件只管理之后新增的作品。刷新此页面会清空尚未提交的新增项。</p>
+        <div id="work-list" class="work-list" aria-label="已有和待添加作品"></div>
+        <label for="json-output" class="json-label">additional-projects.json <span>完整内容</span></label>
+        <textarea id="json-output" readonly spellcheck="false" rows="12" aria-describedby="output-help"></textarea>
+        <p id="output-help" class="field-help">请复制整个数组，包含开头的 [ 和结尾的 ]。不要只复制其中一个作品。</p>
+        <div class="export-actions">
+          <button id="copy-json" class="primary-button" type="button" disabled>复制完整 JSON <span aria-hidden="true">↗</span></button>
+          <a id="edit-github" class="secondary-button" href="https://github.com/CyberJck/class-portfolio/edit/main/additional-projects.json" target="_blank" rel="noopener noreferrer">到 GitHub 编辑 <span aria-hidden="true">↗</span></a>
+        </div>
+        <p id="copy-status" class="form-status" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+
+    <section class="tutorial panel" aria-labelledby="tutorial-title">
+      <p class="kicker">03 / PUBLISH</p>
+      <h2 id="tutorial-title">复制之后，怎么上线？</h2>
+      <ol>
+        <li>点击「到 GitHub 编辑」，用 <strong>CyberJJack</strong> 登录。私有仓库需要有权限的账号才能打开。</li>
+        <li>在文件编辑框里点击一次，按 <kbd>⌘ A</kbd>（Windows 用 <kbd>Ctrl A</kbd>）全选原内容，再粘贴刚复制的完整 JSON。</li>
+        <li>点击 <strong>Commit changes…</strong>，填写说明，例如 <code>Add Orbit Study</code>，确认提交到 <code>main</code>。</li>
+        <li>在仓库的 <strong>Actions</strong> 里等 Pages 发布变绿，再刷新网站的 <a href="./#work">作品区</a>。新增作品会出现在 p5js 分类里。</li>
+      </ol>
+      <details>
+        <summary>封面怎么加？作品为什么没有播放？</summary>
+        <p>封面先通过 GitHub 的 Add file → Upload files 上传到 <code>assets/</code>，提交后再在表单里填写 <code>assets/文件名.webp</code>。也可以填可公开访问的 HTTPS 图片网址。</p>
+        <p>新作品通过 p5.js 原链接实时播放，所以要在 p5.js 中保持公开。先用浏览器无痕窗口打开作品链接，确认没有登录也能看到。此工具不会复制 p5.js 的源码或文件。</p>
+        <p>每次加作品前先重新打开本页面，等「现有作品已读取」出现后再添加。如果加载失败，请先检查文件；不要用空数组覆盖已有资料。</p>
+      </details>
+    </section>
+  </main>
+  <footer><span>JACK / ARCHIVE EDITOR</span><span>填资料 → 复制 → GitHub 提交</span></footer>
+</body>
+</html>

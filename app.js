@@ -1,6 +1,26 @@
-(() => {
+(async () => {
   'use strict';
-  const projects = window.PORTFOLIO_PROJECTS || [];
+  const originals = window.PORTFOLIO_PROJECTS || [];
+  const projectLinks = window.JackProjectLinks;
+  const projects = [...originals];
+  const seen = new Set(originals.map(project => `${project.owner || 'jkan349'}/${project.id}`));
+  const loadController = new AbortController();
+  const loadTimeout = setTimeout(() => loadController.abort(), 4000);
+  try {
+    const response = await fetch('./additional-projects.json', { cache: 'no-store', signal: loadController.signal });
+    if (response.ok) {
+      const additional = await response.json();
+      if (Array.isArray(additional) && projectLinks) additional.forEach(entry => {
+        const project = projectLinks.validateProject(entry);
+        if (!project) return;
+        const key = `${project.owner}/${project.id}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        projects.push(project);
+      });
+    }
+  } catch (_) { /* Original coursework remains available if the extra list is unavailable. */ }
+  finally { clearTimeout(loadTimeout); }
   const grid = document.querySelector('#project-grid');
   const dialog = document.querySelector('#project-dialog');
   const previewHost = document.querySelector('#preview-host');
@@ -53,7 +73,7 @@
       if (project.image) {
         const image = document.createElement('img'); image.src = project.image; image.alt = `${project.title} — capture of the original p5.js sketch`; image.width = 720; image.height = 520; image.loading = 'lazy'; cover.append(image);
       } else {
-        const canvas = document.createElement('canvas'); canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`${project.title} — schematic cover illustration; open to see the actual sketch`); cover.append(canvas); drawCover(canvas, project.cover);
+        const canvas = document.createElement('canvas'); canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`${project.title} — schematic cover illustration; open to see the actual sketch`); cover.append(canvas); drawCover(canvas, project.cover || 'practice');
       }
       const id = document.createElement('span'); id.className = 'cover-id'; id.textContent = `P5 / ${format(projects.indexOf(project) + 1)}`;
       const arrow = document.createElement('span'); arrow.className = 'cover-arrow'; arrow.textContent = '↗'; arrow.setAttribute('aria-hidden','true'); cover.append(id, arrow);
@@ -77,9 +97,15 @@
     document.querySelector('#detail-original').textContent = project.original;
     document.querySelector('#detail-index').textContent = `PROJECT ${format(projects.indexOf(project) + 1)} / CLASS ARCHIVE`;
     const visible = filteredProjects(); document.querySelector('#detail-position').textContent = `${format(visible.indexOf(project) + 1)} / ${format(visible.length)} IN THIS VIEW`;
-    document.querySelector('#detail-source').href = externalLink(project.id, 'sketches');
-    document.querySelector('#detail-full').href = `./sketch.html?id=${encodeURIComponent(project.id)}`;
-    const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive p5.js sketch`; iframe.src = `./sketch.html?id=${encodeURIComponent(project.id)}`; iframe.allow = 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
+    const remote = project.remote ? projectLinks?.parseP5Url(project.source) : null;
+    const preview = remote ? remote.embed : `./sketch.html?id=${encodeURIComponent(project.id)}`;
+    document.querySelector('#detail-source').href = remote ? remote.source : externalLink(project.id, 'sketches');
+    document.querySelector('#detail-full').href = preview;
+    document.querySelector('.preview-note').textContent = remote
+      ? 'Running the published sketch from p5.js. If the preview is unavailable, use “Open full size”. Keep the original p5.js sketch publicly shared.'
+      : 'Running the original sketch with p5.js. Use “Open full size” for more space, or view its original source in the editor.';
+    const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive p5.js sketch`; iframe.src = preview; iframe.allow = 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
+    if (remote) iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-pointer-lock');
     previewHost.replaceChildren(iframe);
     if (!dialog.open) {dialog.showModal();document.body.classList.add('dialog-open');document.querySelector('#close-dialog').focus();}
     dialog.scrollTop = 0;

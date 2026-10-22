@@ -7,17 +7,22 @@
   <meta name="description" content="Jack — a digital portfolio of p5.js experiments, TouchDesigner studies and creative computing.">
   <title>Jack — Digital Portfolio</title>
   <link rel="icon" href="./favicon.svg?v=seamless-line-1" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=alpha-name-7">
+  <link rel="stylesheet" href="./styles.css?v=itachi-title-10">
   <script src="./projects.js?v=seamless-line-1" defer></script>
-  <script src="./app.js?v=seamless-line-1" defer></script>
-  <script src="./portfolio-media.js?v=alpha-name-7" defer></script>
+  <script src="./project-links.js?v=work-manager-11" defer></script>
+  <script src="./app.js?v=work-manager-11" defer></script>
+  <script src="./portfolio-media.js?v=codeflow-red-9" defer></script>
   <script src="./motion.js?v=alpha-name-7" defer></script>
+  <script src="./codeflow-reveal.js?v=codeflow-9" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#work">Skip to work</a>
-  <div class="hero-media" aria-hidden="true">
-    <img id="hero-poster" src="./hero-video-final.webp?v=seamless-line-1" width="1920" height="1080" alt="" fetchpriority="high">
-    <video id="intro-character-video" muted playsinline preload="metadata" aria-hidden="true" hidden></video>
+  <div id="hero-scene" class="hero-media" aria-hidden="true">
+    <video id="hero-codeflow-video" loop muted playsinline preload="none" aria-hidden="true"></video>
+    <div id="hero-character-layer">
+      <img id="hero-poster" src="./hero-video-final.webp?v=seamless-line-1" width="1920" height="1080" alt="" fetchpriority="high">
+      <video id="intro-character-video" muted playsinline preload="metadata" aria-hidden="true" hidden></video>
+    </div>
   </div>
   <div id="intro-name-stage" aria-hidden="true" hidden>
     <video id="intro-name-video" muted playsinline preload="auto" hidden></video>
@@ -50,6 +55,7 @@
         <a class="primary-button" href="#work">Explore the work <span aria-hidden="true">↘</span></a>
         <div class="hero-tags"><span>P5JS</span><i>/</i><span>TOUCHDESIGNER</span><i>/</i><span>MORE TO EXPLORE</span></div>
       </div>
+      <p class="hero-character-title"><strong><span class="sr-only">ITACHI UCHIHA</span><span class="hero-character-typed" aria-hidden="true"><span style="--i:0">I</span><span style="--i:1">T</span><span style="--i:2">A</span><span style="--i:3">C</span><span style="--i:4">H</span><span style="--i:5">I</span><span style="--i:6"> </span><span style="--i:7">U</span><span style="--i:8">C</span><span style="--i:9">H</span><span style="--i:10">I</span><span style="--i:11">H</span><span style="--i:12">A</span></span></strong></p>
       <div class="motion-controls"><button id="replay-intro" type="button" aria-label="Replay intro">↻ Replay intro</button><button id="toggle-motion" type="button" aria-pressed="false">Pause motion</button></div>
       <div class="hero-bottom"><span>CLASS PORTFOLIO <b>—</b> AN OPEN EXPLORATION</span><a href="#work">SCROLL TO DISCOVER <span aria-hidden="true">↓</span></a></div>
     </section>

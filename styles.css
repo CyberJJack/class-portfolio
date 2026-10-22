@@ -218,3 +218,35 @@ body{overflow-x:clip}
 body[data-intro-state="complete"] #intro-name-stage{z-index:2}
 .intro-overlay.is-active{animation:none}
 @media(prefers-reduced-motion:reduce){#intro-name-stage{display:none!important}.alpha-name-ready #hero-wordmark-image{visibility:visible}}
+
+/* A cursor window opens only the character group, revealing the aligned loop.
+   Both films inherit the same cover crop and the same breathing parent. */
+#hero-character-layer{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none}
+.hero-media #hero-codeflow-video{opacity:1;z-index:0;object-position:50% 50%;transform:none;transition:none;background:#000}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  #hero-character-layer.is-codeflow-revealing{
+    -webkit-mask-image:radial-gradient(circle var(--codeflow-radius,200px) at var(--codeflow-x,-1000px) var(--codeflow-y,-1000px),transparent 0%,transparent 42%,rgba(0,0,0,.08) 58%,rgba(0,0,0,.4) 76%,#000 100%);
+    mask-image:radial-gradient(circle var(--codeflow-radius,200px) at var(--codeflow-x,-1000px) var(--codeflow-y,-1000px),transparent 0%,transparent 42%,rgba(0,0,0,.08) 58%,rgba(0,0,0,.4) 76%,#000 100%);
+    mask-mode:alpha;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat
+  }
+}
+body[data-intro-state="running"] #hero-character-layer,
+.motion-paused #hero-character-layer,
+.motion-suspended #hero-character-layer{-webkit-mask-image:none;mask-image:none}
+@media(max-width:700px){.hero-media #hero-codeflow-video{object-position:65% 50%}}
+
+/* The character caption is UI: it never shares the video mask or scene float. */
+.hero-character-title{position:absolute;right:7.5%;bottom:150px;z-index:3;display:flex;align-items:center;gap:14px;max-width:43%;margin:0;color:var(--accent);font:800 clamp(28px,3.1vw,44px)/1 var(--display);letter-spacing:.055em;white-space:nowrap;text-align:right;text-shadow:0 2px 18px #000;pointer-events:none}
+.hero-character-title::before{content:"";width:28px;height:2px;background:currentColor;opacity:.7}
+.hero-character-title strong{font:inherit}
+.hero-character-typed{white-space:pre}
+.hero-character-typed>span{display:inline-block}
+.intro-complete .hero-character-title{animation:character-title-arrive .26s var(--ease-out) .04s both}
+.intro-complete .hero-character-typed>span{animation:character-letter-in .001s steps(1,end) calc(.14s + var(--i)*.035s) both}
+@keyframes character-title-arrive{from{opacity:0;transform:translate3d(28px,8px,0)}to{opacity:1;transform:none}}
+@keyframes character-letter-in{from{opacity:0}to{opacity:1}}
+.motion-paused .hero-character-title,.motion-paused .hero-character-typed>span,
+.motion-suspended .hero-character-title,.motion-suspended .hero-character-typed>span{animation-play-state:paused}
+@media(max-width:1050px){.hero-character-title{right:6%}}
+@media(max-width:700px){.hero-character-title{bottom:125px;max-width:88%;font-size:clamp(27px,7vw,34px);gap:10px}.hero-character-title::before{width:20px;height:1px}}
+@media(prefers-reduced-motion:reduce){.hero-character-title,.hero-character-typed>span{animation:none!important;opacity:1;transform:none}}

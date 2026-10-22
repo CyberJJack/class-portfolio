@@ -1,6 +1,7 @@
 /* Transparent name video and its codec-matched final frame share one plane. */
 window.JackPortfolioMedia = Object.freeze({
   videoPath: './assets/intro-raven.mp4',
+  codeFlowPath: './assets/hero-codeflow-red.mp4',
   overlayStart: 3.7,
   nameDepartAt: 1.1,
   departureDuration: 320,
