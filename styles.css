@@ -162,7 +162,12 @@ html{scrollbar-gutter:stable;overflow-x:hidden}
 html:has(body[data-intro-state="running"]){overflow-y:hidden}
 body{position:relative}
 body[data-intro-state="running"]{position:fixed;top:0;left:0;width:100%}
-body>.hero-media{position:absolute;inset:0 0 auto;height:100vh;height:100svh;width:100%;z-index:0;pointer-events:none;background:#000}
+/* One untransformed clip spans the header and the entire responsive hero.
+   Both films keep their original shared transform and calibrated cover crop. */
+:root{--hero-header-height:84px;--hero-content-min:760px;--hero-identity-top:53px;--hero-copy-top:344px;--hero-scene-height:max(100vh,calc(var(--hero-header-height) + var(--hero-content-min)));--hero-layout-offset:max(0px,calc((var(--hero-scene-height) - var(--hero-header-height) - var(--hero-content-min))/2))}
+@supports(height:100svh){:root{--hero-scene-height:max(100svh,calc(var(--hero-header-height) + var(--hero-content-min)))}}
+#hero-scene-viewport{position:absolute;inset:0 0 auto;width:100%;height:var(--hero-scene-height);overflow:hidden;z-index:0;pointer-events:none;background:#000}
+#hero-scene-viewport>.hero-media{inset:0;width:100%;height:100%;z-index:0;pointer-events:none;background:#000}
 .site-header,main,.site-footer{position:relative;z-index:1}
 .hero{background:transparent}
 .about{background:var(--bg)}
@@ -250,3 +255,17 @@ body[data-intro-state="running"] #hero-character-layer,
 @media(max-width:1050px){.hero-character-title{right:6%}}
 @media(max-width:700px){.hero-character-title{bottom:125px;max-width:88%;font-size:clamp(27px,7vw,34px);gap:10px}.hero-character-title::before{width:20px;height:1px}}
 @media(prefers-reduced-motion:reduce){.hero-character-title,.hero-character-typed>span{animation:none!important;opacity:1;transform:none}}
+
+/* Keep the UI and the clip on the same responsive stage at every breakpoint. */
+.site-header{height:var(--hero-header-height)}
+.hero{min-height:calc(var(--hero-scene-height) - var(--hero-header-height))}
+.hero-identity{top:calc(var(--hero-identity-top) + var(--hero-layout-offset))}
+.hero-copy{padding-top:calc(var(--hero-copy-top) + var(--hero-layout-offset))}
+@media(min-width:1600px){:root{--hero-content-min:810px;--hero-identity-top:68px;--hero-copy-top:380px}}
+@media(max-width:1050px) and (min-width:701px){:root{--hero-content-min:720px;--hero-identity-top:56px;--hero-copy-top:320px}}
+@media(max-width:700px){
+  :root{--hero-header-height:72px;--hero-content-min:830px;--hero-identity-top:42px;--hero-copy-top:267px}
+  #intro-name-stage{display:none!important}
+  .alpha-name-ready #hero-wordmark-image{visibility:visible}
+}
+@media(max-width:380px){:root{--hero-content-min:810px;--hero-copy-top:254px}}
