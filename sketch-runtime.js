@@ -20,7 +20,8 @@
     "1Rfd31OI7": { title: "Solarsystem", hint: "Click the sun to add orbiting planets · Drag and release elsewhere to launch a planet" }
   };
 
-  const id = new URLSearchParams(window.location.search).get("id");
+  const parameters = new URLSearchParams(window.location.search);
+  const id = parameters.get("id");
   const title = document.getElementById("sketch-title");
   const hint = document.getElementById("sketch-hint");
   const status = document.getElementById("status");
@@ -47,6 +48,37 @@
     status.hidden = false;
     status.setAttribute("role", "alert");
   };
+
+  // Linked works share this viewer's title, Restart and source controls.
+  // The published sketch remains in its own sandboxed, cross-origin frame.
+  const remoteSource = parameters.get("source");
+  if (remoteSource !== null) {
+    const remote = window.JackProjectLinks?.parseP5Url(remoteSource);
+    if (!remote) {
+      title.textContent = "Invalid sketch link";
+      document.title = "Invalid sketch link · Jack";
+      hint.textContent = "Open a published p5.js work from the portfolio.";
+      showError("This p5.js link is not valid.", "Choose a project from the portfolio, or use a valid HTTPS p5.js sketch link.");
+      return;
+    }
+    const workTitle = parameters.get("title")?.trim().slice(0, 120) || `${remote.owner} / ${remote.id}`;
+    title.textContent = workTitle;
+    document.title = `${workTitle} · ${remote.owner}`;
+    hint.textContent = `Live p5.js sketch · ${remote.owner}`;
+    source.href = remote.source;
+    const frame = document.createElement("iframe");
+    frame.title = `${workTitle} interactive p5.js sketch`;
+    frame.src = remote.embed;
+    frame.allow = "fullscreen";
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
+    frame.setAttribute("allowfullscreen", "");
+    frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-pointer-lock");
+    stage.append(frame);
+    status.hidden = true;
+    restart.hidden = false;
+    restart.addEventListener("click", () => { frame.src = remote.embed; });
+    return;
+  }
 
   if (!Object.prototype.hasOwnProperty.call(sketches, id)) {
     title.textContent = "Sketch not found";
