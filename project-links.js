@@ -69,6 +69,7 @@
       description,
       instructions,
       ...(image ? { image } : {}),
+      ...(raw.requiresCamera === true ? { requiresCamera: true } : {}),
       source: link.source,
       remote: true
     };
