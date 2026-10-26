@@ -66,17 +66,42 @@
     document.title = `${workTitle} · ${remote.owner}`;
     hint.textContent = `Live p5.js sketch · ${remote.owner}`;
     source.href = remote.source;
-    const frame = document.createElement("iframe");
-    frame.title = `${workTitle} interactive p5.js sketch`;
-    frame.src = remote.embed;
-    frame.allow = "fullscreen";
-    frame.referrerPolicy = "strict-origin-when-cross-origin";
-    frame.setAttribute("allowfullscreen", "");
-    frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-pointer-lock");
-    stage.append(frame);
-    status.hidden = true;
-    restart.hidden = false;
-    restart.addEventListener("click", () => { frame.src = remote.embed; });
+    const requiresCamera = parameters.get("camera") === "1";
+    let frame;
+    const startPreview = () => {
+      if (frame) return;
+      frame = document.createElement("iframe");
+      frame.title = `${workTitle} interactive p5.js sketch`;
+      frame.src = remote.embed;
+      frame.allow = requiresCamera ? "camera; fullscreen" : "fullscreen";
+      frame.referrerPolicy = "strict-origin-when-cross-origin";
+      frame.setAttribute("allowfullscreen", "");
+      frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-pointer-lock");
+      stage.append(frame);
+      status.hidden = true;
+      restart.hidden = false;
+    };
+    restart.addEventListener("click", () => { if (frame) frame.src = remote.embed; });
+    if (requiresCamera) {
+      hint.textContent = `Camera-based p5.js sketch · ${remote.owner}`;
+      status.replaceChildren();
+      const heading = document.createElement("strong");
+      heading.textContent = "Camera-based artwork";
+      const explanation = document.createElement("p");
+      explanation.textContent = "This work uses your camera for hand tracking. Start the preview to choose whether to allow access.";
+      const start = document.createElement("button");
+      start.type = "button";
+      start.className = "camera-start";
+      start.textContent = "Start camera preview";
+      start.addEventListener("click", startPreview);
+      const original = document.createElement("a");
+      original.href = remote.embed;
+      original.target = "_blank";
+      original.rel = "noopener noreferrer";
+      original.textContent = "Open on p5.js ↗";
+      status.append(heading, explanation, start, original);
+      status.hidden = false;
+    } else startPreview();
     return;
   }
 
