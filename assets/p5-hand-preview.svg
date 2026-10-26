@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-labelledby="title desc">
+  <title id="title">Hand Pose Test interaction preview</title>
+  <desc id="desc">A diagram of the artwork's twenty-one hand landmarks and thumb-to-index pinch measurement.</desc>
+  <defs>
+    <radialGradient id="bg"><stop stop-color="#11231f"/><stop offset="1" stop-color="#050809"/></radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#75b69b" stroke-opacity=".08"/></pattern>
+  </defs>
+  <path fill="url(#bg)" d="M0 0H720V520H0z"/><path fill="url(#grid)" d="M0 0H720V520H0z"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M315 441C295 411 277 390 262 366L210 313C191 289 199 268 217 273L264 310 247 246 237 178C236 155 254 151 261 172L286 246 286 119C286 93 308 91 312 118L318 233 336 87C340 62 362 68 360 93L351 234 384 115C391 91 412 103 406 127L383 253 422 167C433 145 452 159 442 183L414 277C412 342 400 390 374 442" fill="#16352d" fill-opacity=".32" stroke="#7ba294" stroke-width="2"/>
+    <g stroke="#77e9a5" stroke-opacity=".7" stroke-width="2">
+      <path d="M341 432 287 347 251 308 222 294 211 281M341 432 309 289 296 225 295 169 297 116M341 432 340 282 345 214 349 149 349 86M341 432 371 290 384 231 395 175 399 120M341 432 397 312 418 259 430 213 437 174M309 289 340 282 371 290 397 312"/>
+    </g>
+    <path d="M211 281 297 116" stroke="#ff3c4e" stroke-width="2" stroke-dasharray="6 6"/>
+  </g>
+  <g fill="#7bffab" stroke="#101d17" stroke-width="2">
+    <circle cx="341" cy="432" r="6"/><circle cx="287" cy="347" r="5"/><circle cx="251" cy="308" r="5"/><circle cx="222" cy="294" r="5"/><circle cx="211" cy="281" r="6"/>
+    <circle cx="309" cy="289" r="5"/><circle cx="296" cy="225" r="5"/><circle cx="295" cy="169" r="5"/><circle cx="297" cy="116" r="6"/>
+    <circle cx="340" cy="282" r="5"/><circle cx="345" cy="214" r="5"/><circle cx="349" cy="149" r="5"/><circle cx="349" cy="86" r="6"/>
+    <circle cx="371" cy="290" r="5"/><circle cx="384" cy="231" r="5"/><circle cx="395" cy="175" r="5"/><circle cx="399" cy="120" r="6"/>
+    <circle cx="397" cy="312" r="5"/><circle cx="418" cy="259" r="5"/><circle cx="430" cy="213" r="5"/><circle cx="437" cy="174" r="6"/>
+  </g>
+  <g fill="#a5c1b8" font-family="ui-monospace,monospace" font-size="11" letter-spacing="1.5">
+    <text x="48" y="64">HAND / LANDMARK STUDY</text><text x="48" y="470" fill="#689180">INTERACTION PREVIEW</text>
+    <text x="500" y="231" fill="#ff6573">THUMB ↔ INDEX</text><path d="M490 239h-48" stroke="#ff6573" stroke-opacity=".6"/>
+    <text x="500" y="259" font-size="10">PINCH DETECTION</text>
+  </g>
+</svg>
