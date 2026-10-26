@@ -7,9 +7,10 @@
     "medium": "p5js",
     "type": "CREATIVE CODING",
     "description": "Make every work have more “tension”",
-    "instructions": "Upload any painting/image",
+    "instructions": "Watch the image expand into radial fragments. Restart to rebuild it.",
     "source": "https://editor.p5js.org/jkan349/sketches/NolU8wAo-",
-    "remote": true
+    "remote": true,
+    "image": "assets/p5-circle-preview.png"
   },
   {
     "id": "KnCmwGAff",
@@ -22,7 +23,8 @@
     "instructions": "Start the preview and allow camera access. Hold your hand in view, then bring your thumb and index finger together to trigger “PINCH!”.",
     "requiresCamera": true,
     "source": "https://editor.p5js.org/jkan349/sketches/KnCmwGAff",
-    "remote": true
+    "remote": true,
+    "image": "assets/p5-hand-preview.svg"
   },
   {
     "id": "I1NmzFSh3",
@@ -31,10 +33,11 @@
     "original": "Robot Control With AI",
     "medium": "p5js",
     "type": "GESTURE CONTROL / AI",
-    "description": "A hand-gesture-controlled robot simulation with animated movement, turning, and a live camera preview.",
-    "instructions": "Start the preview and allow camera access. Open palm: stop. Fist: move forward. One finger: turn left. Two fingers: turn right. Bring two open palms together to reset. Keyboard: W/A/D, arrow keys, Space to stop, R to reset.",
+    "description": "Control an animated robot over a mirrored live camera view using hand gestures.",
+    "instructions": "Start the preview and allow camera access. Open palm or no hand: stop. Fist: move forward. Index finger: turn left. Index and middle fingers: turn right. Bring two open palms together to reset, then separate them before resetting again.",
     "requiresCamera": true,
     "source": "https://editor.p5js.org/jkan349/sketches/I1NmzFSh3",
-    "remote": true
+    "remote": true,
+    "image": "assets/p5-robot-preview.svg"
   }
 ]

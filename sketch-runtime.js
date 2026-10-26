@@ -21,6 +21,8 @@
   };
 
   const parameters = new URLSearchParams(window.location.search);
+  const inline = parameters.get("inline") === "1";
+  if (inline) document.documentElement.classList.add("inline-preview");
   const id = parameters.get("id");
   const title = document.getElementById("sketch-title");
   const hint = document.getElementById("sketch-hint");
@@ -31,7 +33,7 @@
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && window.parent !== window) {
-      window.parent.postMessage({ type: "cyanx:close-project" }, window.location.origin);
+      window.parent.postMessage({ type: inline ? "jack:preview-escape" : "cyanx:close-project" }, window.location.origin);
     }
   });
 
@@ -66,13 +68,24 @@
     document.title = `${workTitle} · ${remote.owner}`;
     hint.textContent = `Live p5.js sketch · ${remote.owner}`;
     source.href = remote.source;
-    const requiresCamera = parameters.get("camera") === "1";
+    const imports = {
+      "jkan349/NolU8wAo-": { path: "./imported-NolU8wAo-.html", camera: false },
+      "jkan349/KnCmwGAff": { path: "./imported-KnCmwGAff.html", camera: true },
+      "jkan349/I1NmzFSh3": { path: "./imported-I1NmzFSh3.html", camera: true }
+    };
+    const imported = imports[`${remote.owner}/${remote.id}`];
+    const playerPath = imported ? imported.path : remote.embed;
+    const requiresCamera = imported?.camera === true || parameters.get("camera") === "1";
     let frame;
+    window.addEventListener("message", (event) => {
+      if (event.origin !== window.location.origin || !frame || event.source !== frame.contentWindow || event.data?.type !== "jack:runner-escape") return;
+      if (window.parent !== window) window.parent.postMessage({ type: inline ? "jack:preview-escape" : "cyanx:close-project" }, window.location.origin);
+    });
     const startPreview = () => {
       if (frame) return;
       frame = document.createElement("iframe");
       frame.title = `${workTitle} interactive p5.js sketch`;
-      frame.src = remote.embed;
+      frame.src = playerPath;
       frame.allow = requiresCamera ? "camera; fullscreen" : "fullscreen";
       frame.referrerPolicy = "strict-origin-when-cross-origin";
       frame.setAttribute("allowfullscreen", "");
@@ -80,10 +93,12 @@
       stage.append(frame);
       status.hidden = true;
       restart.hidden = false;
+      if (requiresCamera && window.parent !== window) window.parent.postMessage({ type: "jack:camera-preview-started" }, window.location.origin);
     };
-    restart.addEventListener("click", () => { if (frame) frame.src = remote.embed; });
+    restart.addEventListener("click", () => { if (frame) frame.src = playerPath; });
     if (requiresCamera) {
       hint.textContent = `Camera-based p5.js sketch · ${remote.owner}`;
+      status.className = "camera-prompt";
       status.replaceChildren();
       const heading = document.createElement("strong");
       heading.textContent = "Camera-based artwork";

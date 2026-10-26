@@ -1,0 +1,17 @@
+/* The cover is its own interactive region; the title below opens project details. */
+.project-card>.project-cover{width:100%}
+.project-card>.project-button{margin:0}
+.project-card:hover>.project-cover,.project-card:focus-within>.project-cover{border-color:var(--accent)}
+.project-cover>.card-preview-frame{position:absolute;inset:0;display:block;width:100%;height:100%;border:0;background:#000;z-index:3}
+.project-cover.is-previewing>img,.project-cover.is-previewing>canvas{visibility:hidden}
+.card-preview-play{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;justify-content:flex-end;width:100%;padding:14px;background:linear-gradient(0deg,#08080b9c,transparent 40%);color:#f4e7ea;font:9px var(--mono);letter-spacing:.035em;text-align:right;cursor:pointer}
+.card-preview-play:hover{color:#ff9ca7}
+.card-preview-play:focus-visible,.card-preview-stop:focus-visible{outline:2px solid var(--accent);outline-offset:-4px}
+.card-preview-stop{position:absolute;top:8px;right:8px;z-index:5;min-height:34px;padding:7px 10px;border:1px solid #c35b6e70;background:#100b10ed;color:#ffd8df;font:9px var(--mono);cursor:pointer;backdrop-filter:blur(8px)}
+.card-preview-status{position:absolute;left:0;right:0;bottom:0;z-index:4;pointer-events:none;padding:7px 10px;background:#08090cde;color:#c8b7bd;font:7px/1.5 var(--mono);letter-spacing:.025em}
+.card-preview-frame~.cover-id{pointer-events:none}
+.project-cover.is-previewing>.cover-id,.project-cover.is-previewing>.cover-note{visibility:hidden}
+.card-preview-play[hidden],.card-preview-stop[hidden],.card-preview-status[hidden]{display:none!important}
+@media(hover:hover) and (pointer:fine){.card-preview-play{opacity:0;transition:opacity .15s}.project-cover:hover>.card-preview-play,.card-preview-play:focus-visible{opacity:1}}
+@media(max-width:700px){.card-preview-play{font-size:8px;padding:10px}.card-preview-stop{top:5px;right:5px;padding:7px 8px;font-size:8px}.card-preview-status{font-size:6px;padding:6px 8px}}
+@media(prefers-reduced-motion:reduce){.card-preview-play{transition:none;opacity:1}}

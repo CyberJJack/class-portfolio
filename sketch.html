@@ -26,6 +26,17 @@
       #status strong { display: block; margin-bottom: 10px; color: #dce8eb; font-size: 16px; font-weight: 500; }
       #status p { color: #8aa6b1; }
       .camera-start { display: block; min-height: 44px; margin: 20px auto 16px; padding: 11px 16px; border: 1px solid #31515e; border-radius: 3px; background: #10232c; }
+      .inline-preview .viewer-bar, .inline-preview .viewer-hint { display: none; }
+      .inline-preview #status { margin: 12px; max-width: calc(100% - 24px); font-size: 10px; line-height: 1.4; }
+      .inline-preview #status strong { font-size: 12px; margin-bottom: 6px; }
+      .inline-preview #status p { margin: 6px 0; }
+      .inline-preview .camera-start { min-height: 36px; margin: 10px auto 8px; padding: 8px 9px; font-size: 10px; }
+      .inline-preview #status a { font-size: 10px; }
+      @media (max-width: 250px) {
+        .inline-preview #status.camera-prompt strong, .inline-preview #status.camera-prompt p { display: none; }
+        .inline-preview .camera-start { min-height: 34px; margin: 8px auto; padding: 8px; font-size: 9px; }
+        .inline-preview #status a { font-size: 9px; }
+      }
       @media (max-width: 480px) {
         .viewer-bar { gap: 8px; padding: 10px; }
         .viewer-links { gap: 10px; font-size: 10px; }
@@ -33,7 +44,7 @@
       }
     </style>
     <script src="./project-links.js?v=camera-works-13" defer></script>
-    <script src="./sketch-runtime.js?v=camera-works-13" defer></script>
+    <script src="./sketch-runtime.js?v=interactive-cards-14-1" defer></script>
   </head>
   <body>
     <header class="viewer-bar">

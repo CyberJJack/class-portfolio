@@ -24,6 +24,7 @@
   const grid = document.querySelector('#project-grid');
   const dialog = document.querySelector('#project-dialog');
   const previewHost = document.querySelector('#preview-host');
+  const cardPreviews = window.JackCardPreviews?.mount({ root: grid, isBlocked: () => dialog.open });
   const format = number => String(number).padStart(2, '0');
   let activeFilter = 'p5js';
   let currentProject = null;
@@ -63,6 +64,7 @@
 
   function renderProjects() {
     const visible = filteredProjects();
+    cardPreviews?.clear();
     grid.replaceChildren();
     document.querySelector('#empty-medium').hidden = visible.length > 0;
     grid.hidden = visible.length === 0;
@@ -71,16 +73,24 @@
       const button = document.createElement('button'); button.className = 'project-button'; button.type = 'button'; button.setAttribute('aria-label', `Open ${project.title}`); button.setAttribute('aria-haspopup', 'dialog');
       const cover = document.createElement('div'); cover.className = 'project-cover';
       if (project.image) {
-        const image = document.createElement('img'); image.src = project.image; image.alt = `${project.title} — capture of the original p5.js sketch`; image.width = 720; image.height = 520; image.loading = 'lazy'; cover.append(image);
+        const image = document.createElement('img'); image.src = project.image; image.alt = `${project.title} — project preview`; image.width = 720; image.height = 520; image.loading = 'lazy'; cover.append(image);
       } else {
         const canvas = document.createElement('canvas'); canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`${project.title} — schematic cover illustration; open to see the actual sketch`); cover.append(canvas); drawCover(canvas, project.cover || 'practice');
       }
       const id = document.createElement('span'); id.className = 'cover-id'; id.textContent = `P5 / ${format(projects.indexOf(project) + 1)}`;
-      const arrow = document.createElement('span'); arrow.className = 'cover-arrow'; arrow.textContent = '↗'; arrow.setAttribute('aria-hidden','true'); cover.append(id, arrow);
+      cover.append(id);
       if (project.note || !project.image) {const badge=document.createElement('span');badge.className='cover-note';badge.textContent=project.image?project.note:(project.note?`${project.note} · SCHEMATIC COVER`:'SCHEMATIC COVER');cover.append(badge);}
       const meta = document.createElement('div'); meta.className = 'project-meta'; const title = document.createElement('h3'); title.textContent = project.title; const openIcon=document.createElement('span');openIcon.textContent='↗';openIcon.setAttribute('aria-hidden','true');meta.append(title,openIcon);
       const type = document.createElement('p'); type.className = 'project-type'; type.textContent = `${project.type} / P5.JS`;
-      button.append(cover, meta, type); button.addEventListener('click', () => openProject(project, button)); article.append(button); grid.append(article);
+      button.append(meta, type); button.addEventListener('click', () => openProject(project, button));
+      article.append(cover, button); grid.append(article);
+      const remote = project.remote ? projectLinks?.parseP5Url(project.source) : null;
+      const requiresCamera = !!remote && project.requiresCamera === true;
+      const src = remote
+        ? `./sketch.html?source=${encodeURIComponent(remote.source)}&title=${encodeURIComponent(project.title)}${requiresCamera ? '&camera=1' : ''}`
+        : `./sketch.html?id=${encodeURIComponent(project.id)}`;
+      if (cardPreviews) cardPreviews.register({ cover, title: project.title, src, requiresCamera });
+      else cover.addEventListener('click', () => openProject(project, button));
     });
     const mediumLabel = activeFilter === 'touchdesigner' ? 'TouchDesigner' : 'p5js';
     document.querySelector('#filter-status').textContent = visible.length ? `${visible.length} ${mediumLabel} projects shown` : `${mediumLabel} work will be added here soon`;
@@ -88,6 +98,7 @@
   }
 
   function openProject(project, trigger) {
+    cardPreviews?.stop();
     currentProject = project;
     if (trigger) lastTrigger = trigger;
     document.querySelector('#detail-title').textContent = project.title;
@@ -105,7 +116,7 @@
     document.querySelector('#detail-source').href = remote ? remote.source : externalLink(project.id, 'sketches');
     document.querySelector('#detail-full').href = preview;
     document.querySelector('.preview-note').textContent = remote
-      ? 'Running the published sketch from p5.js. If the preview is unavailable, use “Open full size”. Keep the original p5.js sketch publicly shared.'
+      ? 'Interactive p5.js artwork. Use “Open full size” for more space, or view its original source in the editor.'
       : 'Running the original sketch with p5.js. Use “Open full size” for more space, or view its original source in the editor.';
     const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive p5.js sketch`; iframe.src = preview; iframe.allow = requiresCamera ? 'camera; fullscreen' : 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
     previewHost.replaceChildren(iframe);
