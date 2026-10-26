@@ -98,15 +98,16 @@
     document.querySelector('#detail-index').textContent = `PROJECT ${format(projects.indexOf(project) + 1)} / CLASS ARCHIVE`;
     const visible = filteredProjects(); document.querySelector('#detail-position').textContent = `${format(visible.indexOf(project) + 1)} / ${format(visible.length)} IN THIS VIEW`;
     const remote = project.remote ? projectLinks?.parseP5Url(project.source) : null;
+    const requiresCamera = !!remote && project.requiresCamera === true;
     const preview = remote
-      ? `./sketch.html?source=${encodeURIComponent(remote.source)}&title=${encodeURIComponent(project.title)}`
+      ? `./sketch.html?source=${encodeURIComponent(remote.source)}&title=${encodeURIComponent(project.title)}${requiresCamera ? '&camera=1' : ''}`
       : `./sketch.html?id=${encodeURIComponent(project.id)}`;
     document.querySelector('#detail-source').href = remote ? remote.source : externalLink(project.id, 'sketches');
     document.querySelector('#detail-full').href = preview;
     document.querySelector('.preview-note').textContent = remote
       ? 'Running the published sketch from p5.js. If the preview is unavailable, use “Open full size”. Keep the original p5.js sketch publicly shared.'
       : 'Running the original sketch with p5.js. Use “Open full size” for more space, or view its original source in the editor.';
-    const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive p5.js sketch`; iframe.src = preview; iframe.allow = 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
+    const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive p5.js sketch`; iframe.src = preview; iframe.allow = requiresCamera ? 'camera; fullscreen' : 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
     previewHost.replaceChildren(iframe);
     if (!dialog.open) {dialog.showModal();document.body.classList.add('dialog-open');document.querySelector('#close-dialog').focus();}
     dialog.scrollTop = 0;
