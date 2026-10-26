@@ -10,5 +10,31 @@
     "instructions": "Upload any painting/image",
     "source": "https://editor.p5js.org/jkan349/sketches/NolU8wAo-",
     "remote": true
+  },
+  {
+    "id": "KnCmwGAff",
+    "owner": "jkan349",
+    "title": "Hand Pose Test",
+    "original": "Hand Pose Test",
+    "medium": "p5js",
+    "type": "HAND TRACKING",
+    "description": "A webcam-based hand-tracking study that draws hand landmarks and detects a thumb–index pinch in real time.",
+    "instructions": "Start the preview and allow camera access. Hold your hand in view, then bring your thumb and index finger together to trigger “PINCH!”.",
+    "requiresCamera": true,
+    "source": "https://editor.p5js.org/jkan349/sketches/KnCmwGAff",
+    "remote": true
+  },
+  {
+    "id": "I1NmzFSh3",
+    "owner": "jkan349",
+    "title": "Robot Control With AI",
+    "original": "Robot Control With AI",
+    "medium": "p5js",
+    "type": "GESTURE CONTROL / AI",
+    "description": "A hand-gesture-controlled robot simulation with animated movement, turning, and a live camera preview.",
+    "instructions": "Start the preview and allow camera access. Open palm: stop. Fist: move forward. One finger: turn left. Two fingers: turn right. Bring two open palms together to reset. Keyboard: W/A/D, arrow keys, Space to stop, R to reset.",
+    "requiresCamera": true,
+    "source": "https://editor.p5js.org/jkan349/sketches/I1NmzFSh3",
+    "remote": true
   }
 ]
