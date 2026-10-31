@@ -10,12 +10,29 @@
   const copyButton = document.querySelector('#copy-json');
   const workList = document.querySelector('#work-list');
   const count = document.querySelector('#draft-count');
+  const mediumField = document.querySelector('#work-medium');
   const builtIns = window.PORTFOLIO_PROJECTS || [];
   let existing = [];
   let pending = [];
   let ready = false;
   const value = id => document.querySelector(id).value;
-  const key = project => `${project.owner || 'jkan349'}/${project.id}`;
+  const key = project => links.projectKey(project);
+  const medium = () => mediumField.value === 'threejs' ? 'threejs' : 'p5js';
+  const requestedMedium = new URL(window.location?.href || 'https://example.invalid/').searchParams.get('medium');
+  mediumField.value = requestedMedium === 'threejs' ? 'threejs' : 'p5js';
+
+  function updateMedium() {
+    const three = medium() === 'threejs';
+    document.querySelector('#form-title').textContent = three ? '添加一个 three.js 作品' : '添加一个 p5.js 作品';
+    document.querySelector('#link-help').textContent = three
+      ? '填写已发布的 three.js 作品运行页（HTTPS），例如 GitHub Pages、Netlify 或 Vercel 的页面。不要填 GitHub 仓库、编辑器或本地地址；先确认未登录也能运行。部分网站禁止嵌入，届时可打开原网页。'
+      : '支持 editor.p5js.org 的 sketches、full、embed 链接。请在 p5.js 中确认作品已公开，访客才能播放。';
+    document.querySelector('#work-link').placeholder = three ? 'https://你的账号.github.io/你的threejs作品/' : 'https://editor.p5js.org/你的账号/sketches/作品ID';
+    const type = document.querySelector('#work-type');
+    if (!type.value || ['CREATIVE CODING', 'WEBGL STUDY'].includes(type.value)) type.value = three ? 'WEBGL STUDY' : 'CREATIVE CODING';
+  }
+  mediumField.addEventListener('change', updateMedium);
+  updateMedium();
 
   function status(element, message, error = false) {
     element.textContent = message;
@@ -33,10 +50,12 @@
     const title = document.createElement('h3');
     title.textContent = project.title;
     const link = document.createElement('a');
-    link.href = links.parseP5Url(project.source).source;
+    const three = project.medium === 'threejs';
+    const address = three ? links.parseThreeUrl(project.source) : links.parseP5Url(project.source);
+    link.href = address.source;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    link.textContent = key(project);
+    link.textContent = three ? `three.js · ${address.source}` : `p5.js · ${key(project)}`;
     const meta = document.createElement('p');
     meta.append(link);
     copy.append(state, title, meta);
@@ -77,9 +96,10 @@
   form.addEventListener('submit', event => {
     event.preventDefault();
     if (!ready) return;
-    const link = links.parseP5Url(value('#work-link'));
+    const selectedMedium = medium();
+    const link = selectedMedium === 'threejs' ? links.parseThreeUrl(value('#work-link')) : links.parseP5Url(value('#work-link'));
     if (!link) {
-      status(formStatus, '请填写完整的 HTTPS p5.js 作品链接（sketches、full 或 embed）。', true);
+      status(formStatus, selectedMedium === 'threejs' ? '请填写公开的 HTTPS three.js 作品运行页链接，不能使用本地地址或带账号密码的链接。' : '请填写完整的 HTTPS p5.js 作品链接（sketches、full 或 embed）。', true);
       document.querySelector('#work-link').focus();
       return;
     }
@@ -92,7 +112,7 @@
       description: value('#work-description'),
       instructions: value('#work-instructions'),
       image: value('#work-image'),
-      medium: 'p5js',
+      medium: selectedMedium,
       remote: true
     });
     if (!project) {
@@ -108,6 +128,8 @@
       pending.push(project);
       render();
       form.reset();
+      mediumField.value = selectedMedium;
+      updateMedium();
       document.querySelector('#work-link').focus();
       status(formStatus, `「${project.title}」已加入待添加列表。请复制完整 JSON 并到 GitHub 提交，网站才会更新。`);
       status(copyStatus, '');
