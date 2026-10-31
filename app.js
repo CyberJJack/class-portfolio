@@ -13,7 +13,7 @@
       if (Array.isArray(additional) && projectLinks) additional.forEach(entry => {
         const project = projectLinks.validateProject(entry);
         if (!project) return;
-        const key = `${project.owner}/${project.id}`;
+        const key = projectLinks.projectKey(project);
         if (seen.has(key)) return;
         seen.add(key);
         projects.push(project);
@@ -37,6 +37,29 @@
 
   const filteredProjects = () => projects.filter(project => (project.medium || 'p5js') === activeFilter);
   const externalLink = (id, mode) => `https://editor.p5js.org/jkan349/${mode}/${encodeURIComponent(id)}`;
+  function projectPreview(project) {
+    if (project.medium === 'threejs') {
+      const link = projectLinks.parseThreeUrl(project.source);
+      return {
+        src: `./sketch.html?medium=threejs&source=${encodeURIComponent(link.source)}&title=${encodeURIComponent(project.title)}`,
+        original: link.source,
+        requiresCamera: false,
+        label: 'three.js',
+        code: '3D'
+      };
+    }
+    const link = project.remote ? projectLinks?.parseP5Url(project.source) : null;
+    const requiresCamera = !!link && project.requiresCamera === true;
+    return {
+      src: link
+        ? `./sketch.html?source=${encodeURIComponent(link.source)}&title=${encodeURIComponent(project.title)}${requiresCamera ? '&camera=1' : ''}`
+        : `./sketch.html?id=${encodeURIComponent(project.id)}`,
+      original: link ? link.source : externalLink(project.id, 'sketches'),
+      requiresCamera,
+      label: 'p5.js',
+      code: 'P5'
+    };
+  }
 
   // Schematic fallback covers are used only until an actual sketch capture is available.
   function drawCover(canvas, kind) {
@@ -44,6 +67,17 @@
     if (!ctx) return;
     const W = 720, H = 520;
     canvas.width = W; canvas.height = H;
+    if (kind === 'threejs') {
+      ctx.fillStyle = '#100b0e'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = '#ff3c4e'; ctx.lineWidth = 2;
+      const points = [[360,100],[220,180],[220,340],[360,420],[500,340],[500,180],[360,260]];
+      for (const [a,b] of [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[1,6],[5,6],[6,3]]) {
+        ctx.beginPath(); ctx.moveTo(...points[a]); ctx.lineTo(...points[b]); ctx.stroke();
+      }
+      ctx.fillStyle = '#ff3c4e';
+      points.forEach(([x,y]) => { ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill(); });
+      return;
+    }
     ctx.fillStyle = '#0b151c'; ctx.fillRect(0, 0, W, H);
     const halo = ctx.createRadialGradient(380, 270, 0, 380, 270, 400);
     halo.addColorStop(0, '#193c4c'); halo.addColorStop(1, '#071016');
@@ -74,27 +108,23 @@
     document.querySelector('#empty-medium').hidden = visible.length > 0;
     grid.hidden = visible.length === 0;
     visible.forEach((project, index) => {
+      const preview = projectPreview(project);
       const article = document.createElement('article'); article.className = 'project-card'; article.style.animationDelay = `${index * 25}ms`;
       const button = document.createElement('button'); button.className = 'project-button'; button.type = 'button'; button.setAttribute('aria-label', `Open ${project.title}`); button.setAttribute('aria-haspopup', 'dialog');
       const cover = document.createElement('div'); cover.className = 'project-cover';
       if (project.image) {
         const image = document.createElement('img'); image.src = project.image; image.alt = `${project.title} — project preview`; image.width = 720; image.height = 520; image.loading = 'lazy'; cover.append(image);
       } else {
-        const canvas = document.createElement('canvas'); canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`${project.title} — schematic cover illustration; open to see the actual sketch`); cover.append(canvas); drawCover(canvas, project.cover || 'practice');
+        const canvas = document.createElement('canvas'); canvas.setAttribute('role','img'); canvas.setAttribute('aria-label',`${project.title} — schematic cover illustration; open to see the actual artwork`); cover.append(canvas); drawCover(canvas, project.medium === 'threejs' ? 'threejs' : project.cover || 'practice');
       }
-      const id = document.createElement('span'); id.className = 'cover-id'; id.textContent = `P5 / ${format(projects.indexOf(project) + 1)}`;
+      const id = document.createElement('span'); id.className = 'cover-id'; id.textContent = `${preview.code} / ${format(projects.indexOf(project) + 1)}`;
       cover.append(id);
       if (project.note || !project.image) {const badge=document.createElement('span');badge.className='cover-note';badge.textContent=project.image?project.note:(project.note?`${project.note} · SCHEMATIC COVER`:'SCHEMATIC COVER');cover.append(badge);}
       const meta = document.createElement('div'); meta.className = 'project-meta'; const title = document.createElement('h3'); title.textContent = project.title; const openIcon=document.createElement('span');openIcon.textContent='↗';openIcon.setAttribute('aria-hidden','true');meta.append(title,openIcon);
-      const type = document.createElement('p'); type.className = 'project-type'; type.textContent = `${project.type} / P5.JS`;
+      const type = document.createElement('p'); type.className = 'project-type'; type.textContent = `${project.type} / ${preview.label.toUpperCase()}`;
       button.append(meta, type); button.addEventListener('click', () => openProject(project, button));
       article.append(cover, button); grid.append(article);
-      const remote = project.remote ? projectLinks?.parseP5Url(project.source) : null;
-      const requiresCamera = !!remote && project.requiresCamera === true;
-      const src = remote
-        ? `./sketch.html?source=${encodeURIComponent(remote.source)}&title=${encodeURIComponent(project.title)}${requiresCamera ? '&camera=1' : ''}`
-        : `./sketch.html?id=${encodeURIComponent(project.id)}`;
-      if (cardPreviews) cardPreviews.register({ cover, title: project.title, src, requiresCamera });
+      if (cardPreviews) cardPreviews.register({ cover, title: project.title, src: preview.src, requiresCamera: preview.requiresCamera });
       else cover.addEventListener('click', () => openProject(project, button));
     });
     const medium = media[activeFilter] || media.p5js;
@@ -103,8 +133,11 @@
     document.querySelector('#empty-kicker').textContent = `${mediumLabel.toUpperCase()} / COMING SOON`;
     document.querySelector('#empty-title').textContent = medium.title;
     document.querySelector('#empty-description').textContent = medium.description;
+    document.querySelector('#empty-add-work').hidden = activeFilter !== 'threejs';
     document.querySelector('#filter-status').textContent = visible.length ? `${visible.length} ${mediumLabel} projects shown` : `${mediumLabel} work will be added here soon`;
     document.querySelector('#archive-count').textContent = format(projects.length);
+    const threeCount = projects.filter(project => project.medium === 'threejs').length;
+    document.querySelector('#threejs-work-state').textContent = threeCount ? `${format(threeCount)} ${threeCount === 1 ? 'WORK' : 'WORKS'} IN THE ARCHIVE` : 'WORK TO BE ADDED';
   }
 
   function openProject(project, trigger) {
@@ -118,17 +151,17 @@
     document.querySelector('#detail-original').textContent = project.original;
     document.querySelector('#detail-index').textContent = `PROJECT ${format(projects.indexOf(project) + 1)} / CLASS ARCHIVE`;
     const visible = filteredProjects(); document.querySelector('#detail-position').textContent = `${format(visible.indexOf(project) + 1)} / ${format(visible.length)} IN THIS VIEW`;
-    const remote = project.remote ? projectLinks?.parseP5Url(project.source) : null;
-    const requiresCamera = !!remote && project.requiresCamera === true;
-    const preview = remote
-      ? `./sketch.html?source=${encodeURIComponent(remote.source)}&title=${encodeURIComponent(project.title)}${requiresCamera ? '&camera=1' : ''}`
-      : `./sketch.html?id=${encodeURIComponent(project.id)}`;
-    document.querySelector('#detail-source').href = remote ? remote.source : externalLink(project.id, 'sketches');
-    document.querySelector('#detail-full').href = preview;
-    document.querySelector('.preview-note').textContent = remote
-      ? 'Interactive p5.js artwork. Use “Open full size” for more space, or view its original source in the editor.'
+    const preview = projectPreview(project);
+    const isThree = project.medium === 'threejs';
+    document.querySelector('#detail-source').href = preview.original;
+    document.querySelector('#detail-source-label').textContent = isThree ? 'Open original work' : 'View source code';
+    document.querySelector('#detail-medium').textContent = `${preview.label} / JavaScript`;
+    document.querySelector('#detail-runtime-label').textContent = isThree ? 'LIVE THREE.JS WORK' : 'LIVE P5.JS SKETCH';
+    document.querySelector('#detail-full').href = preview.src;
+    document.querySelector('.preview-note').textContent = isThree
+      ? 'Interactive three.js artwork. Use “Open full size” for more space. If its host blocks embedded previews, choose “Open original work”.'
       : 'Running the original sketch with p5.js. Use “Open full size” for more space, or view its original source in the editor.';
-    const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive p5.js sketch`; iframe.src = preview; iframe.allow = requiresCamera ? 'camera; fullscreen' : 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
+    const iframe = document.createElement('iframe'); iframe.title = `${project.title} interactive ${preview.label} artwork`; iframe.src = preview.src; iframe.allow = preview.requiresCamera ? 'camera; fullscreen' : 'fullscreen'; iframe.referrerPolicy = 'strict-origin-when-cross-origin'; iframe.setAttribute('allowfullscreen','');
     previewHost.replaceChildren(iframe);
     if (!dialog.open) {dialog.showModal();document.body.classList.add('dialog-open');document.querySelector('#close-dialog').focus();}
     dialog.scrollTop = 0;
