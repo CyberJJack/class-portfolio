@@ -28,6 +28,38 @@
     };
   }
 
+  // This validates the address only. Availability and permission to embed are
+  // controlled by the hosting site, so the viewer also offers the original URL.
+  function parseThreeUrl(raw) {
+    if (typeof raw !== 'string' || raw.length > 2048 || forbiddenControl.test(raw) || raw.includes('\\')) return null;
+    const input = raw.trim();
+    if (!/^https:\/\//i.test(input)) return null;
+    let url;
+    try { url = new URL(input); } catch { return null; }
+    if (url.protocol !== 'https:' || !url.hostname || url.username || url.password) return null;
+    const host = url.hostname.toLowerCase();
+    if (host === 'localhost' || host.endsWith('.localhost') || host.endsWith('.local') || host === '[::1]' || host === '[::]') return null;
+    const ipv4 = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
+    if (ipv4) {
+      const first = Number(ipv4[1]), second = Number(ipv4[2]);
+      if (first === 0 || first === 10 || first === 127 || first >= 224 ||
+          (first === 169 && second === 254) || (first === 172 && second >= 16 && second <= 31) ||
+          (first === 192 && second === 168)) return null;
+    }
+    const source = url.href;
+    let hash = 2166136261;
+    for (let i = 0; i < source.length; i++) hash = Math.imul(hash ^ source.charCodeAt(i), 16777619) >>> 0;
+    return { source, id: `three-${hash.toString(16).padStart(8, '0')}` };
+  }
+
+  function projectKey(project) {
+    if (project?.medium === 'threejs') {
+      const link = parseThreeUrl(project.source);
+      return link ? `threejs:${link.source}` : '';
+    }
+    return `${project?.owner || 'jkan349'}/${project?.id || ''}`;
+  }
+
   function validateCover(raw) {
     if (raw === undefined || raw === null || raw === '') return '';
     if (typeof raw !== 'string' || raw.length > 2048 || forbiddenControl.test(raw)) return null;
@@ -49,27 +81,29 @@
 
   function validateProject(raw) {
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
-    const link = parseP5Url(raw.source);
-    if (!link || (raw.owner !== undefined && raw.owner !== link.owner) || (raw.id !== undefined && raw.id !== link.id)) return null;
-    if (raw.medium !== undefined && raw.medium !== 'p5js') return null;
+    const medium = raw.medium === undefined ? 'p5js' : raw.medium;
+    if (medium !== 'p5js' && medium !== 'threejs') return null;
+    const link = medium === 'threejs' ? parseThreeUrl(raw.source) : parseP5Url(raw.source);
+    if (!link || (raw.id !== undefined && raw.id !== link.id) ||
+        (medium === 'p5js' && raw.owner !== undefined && raw.owner !== link.owner)) return null;
     const title = text(raw.title, 120);
     const original = text(raw.original, 160, title);
-    const type = text(raw.type, 80, 'P5.JS STUDY');
+    const type = text(raw.type, 80, medium === 'threejs' ? 'THREE.JS STUDY' : 'P5.JS STUDY');
     const description = text(raw.description, 2000);
     const instructions = text(raw.instructions, 1000);
     const image = validateCover(raw.image);
     if (!title || original === null || !type || description === null || instructions === null || image === null) return null;
     return {
       id: link.id,
-      owner: link.owner,
+      ...(medium === 'p5js' ? { owner: link.owner } : {}),
       title,
       original: original || title,
-      medium: 'p5js',
+      medium,
       type,
       description,
       instructions,
       ...(image ? { image } : {}),
-      ...(raw.requiresCamera === true ? { requiresCamera: true } : {}),
+      ...(medium === 'p5js' && raw.requiresCamera === true ? { requiresCamera: true } : {}),
       source: link.source,
       remote: true
     };
@@ -83,7 +117,7 @@
       for (const item of list) {
         const project = validateProject(item);
         if (!project) throw new Error(existing ? '已有作品数据有误；为保留原数据，已停止生成。请先检查 GitHub 文件。' : '新作品资料有误，请检查链接和必填字段。');
-        const key = `${project.owner}/${project.id}`;
+        const key = projectKey(project);
         if (seen.has(key)) throw new Error(`重复作品：${key} 已经在列表中。`);
         seen.add(key);
         // Preserve existing custom fields and text exactly; normalize new entries only.
@@ -93,5 +127,5 @@
     return { entries, json: `${JSON.stringify(entries, null, 2)}\n`, count: entries.length };
   }
 
-  window.JackProjectLinks = Object.freeze({ parseP5Url, validateCover, validateProject, createDraft });
+  window.JackProjectLinks = Object.freeze({ parseP5Url, parseThreeUrl, projectKey, validateCover, validateProject, createDraft });
 })();
