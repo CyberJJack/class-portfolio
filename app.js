@@ -29,6 +29,11 @@
   let activeFilter = 'p5js';
   let currentProject = null;
   let lastTrigger = null;
+  const media = {
+    p5js: { label: 'p5js', symbol: 'P5', title: 'Another experiment is on its way.', description: 'Future p5js work will appear here.' },
+    touchdesigner: { label: 'TouchDesigner', symbol: 'TD', title: 'A new signal is on its way.', description: 'Future TouchDesigner work will appear here. For now, explore the p5js collection.' },
+    threejs: { label: 'three.js', symbol: '3D', title: 'Room for another dimension.', description: 'Future three.js experiments will appear here. For now, explore the p5js collection.' }
+  };
 
   const filteredProjects = () => projects.filter(project => (project.medium || 'p5js') === activeFilter);
   const externalLink = (id, mode) => `https://editor.p5js.org/jkan349/${mode}/${encodeURIComponent(id)}`;
@@ -92,7 +97,12 @@
       if (cardPreviews) cardPreviews.register({ cover, title: project.title, src, requiresCamera });
       else cover.addEventListener('click', () => openProject(project, button));
     });
-    const mediumLabel = activeFilter === 'touchdesigner' ? 'TouchDesigner' : 'p5js';
+    const medium = media[activeFilter] || media.p5js;
+    const mediumLabel = medium.label;
+    document.querySelector('#empty-symbol-label').textContent = medium.symbol;
+    document.querySelector('#empty-kicker').textContent = `${mediumLabel.toUpperCase()} / COMING SOON`;
+    document.querySelector('#empty-title').textContent = medium.title;
+    document.querySelector('#empty-description').textContent = medium.description;
     document.querySelector('#filter-status').textContent = visible.length ? `${visible.length} ${mediumLabel} projects shown` : `${mediumLabel} work will be added here soon`;
     document.querySelector('#archive-count').textContent = format(projects.length);
   }
@@ -139,6 +149,9 @@
     button.addEventListener('click',()=>{activeFilter=button.dataset.filter;document.querySelectorAll('.filter').forEach(filter=>{const active=filter===button;filter.classList.toggle('active',active);filter.setAttribute('aria-pressed',String(active));});renderProjects();});
   });
   document.querySelector('#show-p5js').addEventListener('click', () => document.querySelector('[data-filter="p5js"]').click());
+  document.querySelectorAll('[data-medium-target]').forEach(link => {
+    link.addEventListener('click', () => document.querySelector(`[data-filter="${link.dataset.mediumTarget}"]`)?.click());
+  });
   document.querySelector('.nav-work span').textContent = format(projects.length);
   renderProjects();
 })();
