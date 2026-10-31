@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#070708">
-  <meta name="description" content="Jack — a digital portfolio of p5.js experiments, TouchDesigner studies and creative computing.">
+  <meta name="description" content="Jack — a digital portfolio of p5.js experiments, TouchDesigner studies, three.js and creative computing.">
   <title>Jack — Digital Portfolio</title>
   <link rel="icon" href="./favicon.svg?v=seamless-line-1" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=responsive-12">
+  <link rel="stylesheet" href="./styles.css?v=threejs-15">
   <link rel="stylesheet" href="./card-previews.css?v=interactive-14-1">
   <script src="./projects.js?v=seamless-line-1" defer></script>
   <script src="./project-links.js?v=camera-works-13" defer></script>
   <script src="./card-previews.js?v=interactive-14-1" defer></script>
-  <script src="./app.js?v=interactive-14-1" defer></script>
+  <script src="./app.js?v=threejs-15" defer></script>
   <script src="./portfolio-media.js?v=codeflow-red-9" defer></script>
   <script src="./motion.js?v=responsive-12" defer></script>
   <script src="./codeflow-reveal.js?v=codeflow-9" defer></script>
@@ -38,7 +38,7 @@
   </div>
   <header class="site-header">
     <a class="brand name-brand" href="#top" aria-label="Jack home"><span>Jack</span></a>
-    <nav aria-label="Main navigation"><a href="#work" class="nav-work">Work <span>09</span></a><a href="#digital">TouchDesigner</a><a href="#about">About</a></nav>
+    <nav aria-label="Main navigation"><a href="#work" class="nav-work">Work <span>09</span></a><a href="#digital">TouchDesigner</a><a href="#threejs">three.js</a><a href="#about">About</a></nav>
     <a class="header-link" href="https://editor.p5js.org/jkan349/collections/qvees2nPr" target="_blank" rel="noopener noreferrer">p5.js collection <span aria-hidden="true">↗</span></a>
   </header>
 
@@ -57,7 +57,7 @@
         <h1 id="hero-title">Digital <em>Portfolio</em><span class="title-point">.</span></h1>
         <p>A space for experiments in code, interaction,<br class="desktop-break"> and digital form. Built one sketch at a time.</p>
         <a class="primary-button" href="#work">Explore the work <span aria-hidden="true">↘</span></a>
-        <div class="hero-tags"><span>P5JS</span><i>/</i><span>TOUCHDESIGNER</span><i>/</i><span>MORE TO EXPLORE</span></div>
+        <div class="hero-tags"><span>P5JS</span><i>/</i><span>TOUCHDESIGNER</span><i>/</i><span>THREE.JS</span></div>
       </div>
       <p class="hero-character-title"><strong><span class="sr-only">ITACHI UCHIHA</span><span class="hero-character-typed" aria-hidden="true"><span style="--i:0">I</span><span style="--i:1">T</span><span style="--i:2">A</span><span style="--i:3">C</span><span style="--i:4">H</span><span style="--i:5">I</span><span style="--i:6"> </span><span style="--i:7">U</span><span style="--i:8">C</span><span style="--i:9">H</span><span style="--i:10">I</span><span style="--i:11">H</span><span style="--i:12">A</span></span></strong></p>
       <div class="motion-controls"><button id="replay-intro" type="button" aria-label="Replay intro">↻ Replay intro</button><button id="toggle-motion" type="button" aria-pressed="false">Pause motion</button></div>
@@ -67,17 +67,33 @@
     <section class="work section-shell" id="work" aria-labelledby="work-title">
       <svg class="feather-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="feather-red" x1=".1" y1="1" x2=".85" y2="0"><stop stop-color="#39101c"/><stop offset=".52" stop-color="#9e2538"/><stop offset="1" stop-color="#e64654"/></linearGradient><symbol id="raven-feather" viewBox="0 0 80 180"><path d="M22 148C10 129 12 109 17 91L25 103 20 77C28 53 41 28 56 8C67 37 70 66 65 86L56 94 64 91C62 109 54 126 45 135L43 121 37 144 28 154Z" fill="url(#feather-red)" fill-opacity=".55"/><g fill="none" stroke-linecap="round"><path d="M18 173C26 146 38 92 56 8" stroke="#ed4b59" stroke-width="1.25"/><path d="M26 143 16 119M29 132 16 106M32 120 19 92M35 108 22 79M38 95 28 63M41 82 33 51M44 69 39 39M47 56 45 29M50 42 50 20M28 144 42 132M31 133 50 119M34 121 56 106M37 108 60 91M40 95 64 77M43 82 66 64M46 69 65 51M49 56 63 38M52 41 60 25" stroke="#e34153" stroke-width=".65" opacity=".76"/><path d="M20 168 27 145" stroke="#ff8c93" stroke-width=".65"/></g></symbol></defs></svg>
       <div class="section-heading"><div class="archive-title"><p class="section-kicker">01 / THE ARCHIVE</p><h2 id="work-title">Selected work<span class="accent">.</span></h2><svg class="section-feather feather--archive" aria-hidden="true" focusable="false"><use href="#raven-feather"/></svg></div><p class="section-description">Small experiments. New possibilities.<br>A collection of work from creative coding class.</p></div>
-      <div class="archive-toolbar"><div class="filters" role="group" aria-label="Filter projects by medium"><button class="filter active" data-filter="p5js" aria-pressed="true">p5js <span>09</span></button><button class="filter" data-filter="touchdesigner" aria-pressed="false">TouchDesigner <span>00</span></button></div><span class="view-label" aria-hidden="true"><span>▦</span> GRID VIEW</span></div>
+      <div class="archive-toolbar"><div class="filters" role="group" aria-label="Filter projects by medium"><button class="filter active" data-filter="p5js" aria-pressed="true">p5js <span>09</span></button><button class="filter" data-filter="touchdesigner" aria-pressed="false">TouchDesigner <span>00</span></button><button class="filter" data-filter="threejs" aria-pressed="false">three.js <span>00</span></button></div><span class="view-label" aria-hidden="true"><span>▦</span> GRID VIEW</span></div>
       <p class="sr-only" id="filter-status" role="status" aria-live="polite"></p>
       <div class="project-grid" id="project-grid"></div>
-      <div class="empty-medium" id="empty-medium" hidden><div class="empty-symbol" aria-hidden="true">TD<span>+</span></div><div><p class="section-kicker">TOUCHDESIGNER / COMING SOON</p><h3>A new signal is on its way.</h3><p>Future TouchDesigner work will appear here.<br>For now, explore the p5js collection.</p><button class="text-button" id="show-p5js" type="button">Explore p5js <span aria-hidden="true">↗</span></button></div></div>
+      <div class="empty-medium" id="empty-medium" hidden><div class="empty-symbol" aria-hidden="true"><b id="empty-symbol-label">TD</b><span>+</span></div><div><p class="section-kicker" id="empty-kicker">TOUCHDESIGNER / COMING SOON</p><h3 id="empty-title">A new signal is on its way.</h3><p id="empty-description">Future TouchDesigner work will appear here. For now, explore the p5js collection.</p><button class="text-button" id="show-p5js" type="button">Explore p5js <span aria-hidden="true">↗</span></button></div></div>
       <noscript><p class="noscript">Enable JavaScript for the interactive archive, or <a href="https://editor.p5js.org/jkan349/collections/qvees2nPr">view all nine works on p5.js ↗</a>.</p></noscript>
       <div class="archive-end"><span><span class="status-dot"></span> <span id="archive-count">09</span> EXPERIMENTS & COUNTING</span><a href="https://editor.p5js.org/jkan349/collections/qvees2nPr" target="_blank" rel="noopener noreferrer">View the original collection <span aria-hidden="true">↗</span></a></div>
     </section>
 
     <section class="digital section-shell" id="digital" aria-labelledby="digital-title"><div class="digital-signal" aria-hidden="true"><span>+</span><div class="signal-orbit"></div><b>TD</b><span>+</span></div><div class="digital-copy"><p class="section-kicker">02 / THE NEXT MEDIUM</p><h2 id="digital-title">TouchDesigner<span class="accent">.</span><br>A new signal.</h2><p>A space for future TouchDesigner experiments<br class="desktop-break"> in real-time visuals and digital motion.</p><span class="outlined-label"><span class="status-dot"></span> WORK TO BE ADDED</span></div><svg class="section-feather feather--digital" aria-hidden="true" focusable="false"><use href="#raven-feather"/></svg><span class="digital-index" aria-hidden="true">NEXT / 02</span></section>
 
-    <section class="about section-shell" id="about" aria-labelledby="about-title"><div><p class="section-kicker">03 / THE PERSON BEHIND THE PIXELS</p><h2 id="about-title">Hi, I'm Jack<span class="accent">.</span><br>Making things move.</h2><div class="about-feather-detail" aria-hidden="true"><span></span><svg class="section-feather feather--about" focusable="false"><use href="#raven-feather"/></svg></div></div><div class="about-copy"><p>I’m exploring what happens when code becomes a creative medium. This portfolio brings together my class assignments, playful tests, and experiments in p5.js.</p><p>From portraits made with simple shapes to moving particles and three-dimensional studies, each sketch is another way to learn by making.</p><div class="about-links"><a href="https://github.com/CyberJJack" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://editor.p5js.org/jkan349" target="_blank" rel="noopener noreferrer">p5.js <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="digital threejs section-shell" id="threejs" aria-labelledby="threejs-title">
+      <div class="threejs-visual" aria-hidden="true">
+        <span class="threejs-axis threejs-axis--top">Y / +1.00</span>
+        <svg viewBox="0 0 320 260" fill="none" focusable="false">
+          <path class="threejs-guide" d="M30 130H290M160 20V240M50 212 270 48M50 48 270 212"/>
+          <path class="threejs-back" d="m160 40-84 48v88l84 48 84-48V88Z M76 88l84 48 84-48M160 136v88"/>
+          <path class="threejs-face" d="m160 40 84 48-84 48-84-48Z"/>
+          <path class="threejs-edge" d="m160 40-84 48v88l84 48 84-48V88Z M76 176l84-48 84 48M160 40v88"/>
+          <g class="threejs-vertices"><circle cx="160" cy="40" r="3"/><circle cx="76" cy="88" r="3"/><circle cx="244" cy="88" r="3"/><circle cx="160" cy="128" r="4"/><circle cx="76" cy="176" r="3"/><circle cx="244" cy="176" r="3"/><circle cx="160" cy="224" r="3"/></g>
+        </svg>
+        <span class="threejs-axis threejs-axis--bottom">X / Y / Z <i>WEBGL</i></span>
+      </div>
+      <div class="digital-copy"><p class="section-kicker">03 / ANOTHER DIMENSION</p><h2 id="threejs-title">three.js<span class="accent">.</span><br>Beyond the flat.</h2><p>A space for interactive worlds, shaders,<br class="desktop-break"> and 3D experiments in the browser.</p><span class="outlined-label"><span class="status-dot"></span> WORK TO BE ADDED</span><a class="text-button threejs-link" href="#work" data-medium-target="threejs">View three.js work <span aria-hidden="true">↗</span></a></div>
+      <svg class="section-feather feather--digital" aria-hidden="true" focusable="false"><use href="#raven-feather"/></svg><span class="digital-index" aria-hidden="true">SPACE / 03</span>
+    </section>
+
+    <section class="about section-shell" id="about" aria-labelledby="about-title"><div><p class="section-kicker">04 / THE PERSON BEHIND THE PIXELS</p><h2 id="about-title">Hi, I'm Jack<span class="accent">.</span><br>Making things move.</h2><div class="about-feather-detail" aria-hidden="true"><span></span><svg class="section-feather feather--about" focusable="false"><use href="#raven-feather"/></svg></div></div><div class="about-copy"><p>I’m exploring what happens when code becomes a creative medium. This portfolio brings together my class assignments, playful tests, and experiments in p5.js.</p><p>From portraits made with simple shapes to moving particles and three-dimensional studies, each sketch is another way to learn by making.</p><div class="about-links"><a href="https://github.com/CyberJJack" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a><a href="https://editor.p5js.org/jkan349" target="_blank" rel="noopener noreferrer">p5.js <span aria-hidden="true">↗</span></a></div></div></section>
   </main>
 
   <footer class="site-footer"><a class="brand name-brand" href="#top" aria-label="Jack home"><span>Jack</span></a><p>JACK KAN <span>/</span> CODE. PLAY. REPEAT.</p><a href="#top">BACK TO TOP <span aria-hidden="true">↑</span></a></footer>
