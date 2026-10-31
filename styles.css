@@ -269,3 +269,30 @@ body[data-intro-state="running"] #hero-character-layer,
   .alpha-name-ready #hero-wordmark-image{visibility:visible}
 }
 @media(max-width:380px){:root{--hero-content-min:810px;--hero-copy-top:254px}}
+
+/* A reserved space for the next medium, in the same archive language. */
+.empty-symbol>b{font:inherit}
+.empty-medium #empty-description{max-width:390px}
+.threejs{background:linear-gradient(112deg,#130d10,#09090b);min-height:380px}
+.threejs-visual{position:relative;flex:0 0 32%;height:280px;display:grid;place-items:center}
+.threejs-visual svg{width:100%;max-width:320px;height:260px;overflow:visible}
+.threejs-guide{stroke:#b74a5d;stroke-opacity:.13;stroke-width:1;stroke-dasharray:3 7}
+.threejs-back{stroke:#71414a;stroke-width:1.2;stroke-dasharray:4 5}
+.threejs-face{fill:#ff3c4e;fill-opacity:.035}
+.threejs-edge{stroke:#d74759;stroke-width:1.4;stroke-linejoin:round}
+.threejs-vertices{fill:#ff3c4e}
+.threejs-axis{position:absolute;left:18%;font:7px var(--mono);letter-spacing:1px;color:#9a707a}
+.threejs-axis--top{top:0}
+.threejs-axis--bottom{bottom:0;right:18%;display:flex;justify-content:space-between}
+.threejs-axis i{font-style:normal;color:#e15a69}
+.threejs-link{display:table;margin-top:17px}
+@media(max-width:1050px) and (min-width:701px){.site-header nav{gap:20px}.header-link{gap:10px}}
+@media(max-width:700px){
+  .site-header{gap:12px}
+  .site-header nav{gap:14px;font-size:10px}
+  .threejs{min-height:350px;padding-top:40px;padding-bottom:40px}
+  .threejs-visual{position:absolute;right:-62px;top:35px;width:250px;height:260px;opacity:.25}
+  .threejs .digital-copy{max-width:84%}
+  .threejs-axis{display:none}
+}
+@media(max-width:380px){.site-header nav{gap:10px;font-size:9px}.filters{gap:3px}.filter{padding:10px 11px}}
