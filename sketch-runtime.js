@@ -54,6 +54,68 @@
   // Linked works share this viewer's title, Restart and source controls.
   // The published sketch remains in its own sandboxed, cross-origin frame.
   const remoteSource = parameters.get("source");
+  if (parameters.get("medium") === "threejs") {
+    const remote = window.JackProjectLinks?.parseThreeUrl(remoteSource);
+    source.hidden = true;
+    if (!remote) {
+      title.textContent = "Invalid artwork link";
+      document.title = "Invalid artwork link · Jack";
+      hint.textContent = "Choose a published three.js work from the portfolio.";
+      showError("This artwork link is not valid.", "Use the HTTPS address of a published three.js page, or choose a work from the portfolio.");
+      return;
+    }
+    document.documentElement.classList.add("web-work");
+    const workTitle = parameters.get("title")?.trim().slice(0, 120) || "three.js artwork";
+    title.textContent = workTitle;
+    document.title = `${workTitle} · Jack`;
+    stage.setAttribute("aria-label", "Live three.js artwork");
+    source.href = remote.source;
+    source.textContent = "Open original ↗";
+    source.hidden = false;
+    hint.textContent = "three.js artwork · If the preview is blank or blocked, choose Open original.";
+    const frame = document.createElement("iframe");
+    frame.title = `${workTitle} interactive three.js artwork`;
+    frame.allow = "fullscreen";
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
+    frame.setAttribute("allowfullscreen", "");
+    frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-pointer-lock");
+    const original = document.createElement("a");
+    original.className = "web-original-link";
+    original.href = remote.source;
+    original.target = "_blank";
+    original.rel = "noopener noreferrer";
+    original.textContent = "Original ↗";
+    original.setAttribute("aria-label", "Open original artwork");
+    let loadingTimer;
+    const finishLoading = () => {
+      clearTimeout(loadingTimer);
+      status.hidden = true;
+    };
+    const beginLoading = () => {
+      clearTimeout(loadingTimer);
+      status.replaceChildren();
+      status.setAttribute("role", "status");
+      const heading = document.createElement("strong");
+      heading.textContent = "Loading artwork…";
+      status.append(heading);
+      status.hidden = false;
+      // A cross-origin load event does not prove that the host permitted
+      // embedding. Keep the original link available even after navigation.
+      loadingTimer = setTimeout(finishLoading, 8000);
+      frame.src = remote.source;
+    };
+    frame.addEventListener("load", finishLoading);
+    frame.addEventListener("error", () => {
+      clearTimeout(loadingTimer);
+      showError("The embedded artwork could not load.", "Some hosts block embedded previews. Use Open original to view this work on its own page.");
+    });
+    window.addEventListener("pagehide", () => clearTimeout(loadingTimer));
+    restart.addEventListener("click", beginLoading);
+    restart.hidden = false;
+    stage.append(frame, original);
+    beginLoading();
+    return;
+  }
   if (remoteSource !== null) {
     const remote = window.JackProjectLinks?.parseP5Url(remoteSource);
     if (!remote) {
